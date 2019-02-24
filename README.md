@@ -6,8 +6,11 @@ LoST is loosely based on a fictional video game described in the short story *Na
 
 ## Build instructions
 
-### macOS
+* Install cmake version >= 3.1.0.
+* Install SDL2 libraries locally.
+* In a terminal from the root folder type:
 
-Install SDL2 libraries locally, then in a terminal from the root folder type:
-
-`g++ src/main.cpp -w -lSDL2 -o build/LoST.app -I/usr/local/include -L/usr/local/lib`
+    ```
+    cmake .
+    make
+    ```

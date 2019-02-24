@@ -1,6 +1,7 @@
-#include <SDL2/SDL.h>
 #include <cstdio>
 #include <cstdlib>
+#include "SDL.h"
+#include "game.hpp"
 
 // Software version constants
 const char* SOFTWARE_NAME = "LoST";

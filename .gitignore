@@ -1,5 +1,19 @@
-**/*.app
-**/*.exe
-**/.DS_Store
-**/*.o
-**/*.a
+# Local configuration
+.DS_Store
+.vscode/
+
+# Compiled files
+*.o
+*.a
+
+# Executables
+*.app
+*.exe
+*.out
+LoST
+
+# CMake
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile

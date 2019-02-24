@@ -3,8 +3,8 @@
 #include <cstdlib>
 #include <string>
 
-#ifndef __GAME_HPP
-#define __GAME_HPP
+#ifndef GAME_HPP__
+#define GAME_HPP__
 
 using namespace std;
 
@@ -12,8 +12,8 @@ class Game {
     public:
         Game(string title);
         ~Game();
-        int Game::setup();
-        int Game::loop();
+        int setup();
+        int loop();
 
     private:
         SDL_Window* m_window;
@@ -22,4 +22,4 @@ class Game {
         string m_title;
 };
 
-#endif // __GAME_HPP
+#endif // GAME_HPP__
