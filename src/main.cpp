@@ -1,6 +1,7 @@
 #include <sstream>
 #include "game.hpp"
 
+
 // Software version constants
 const char* SOFTWARE_NAME = "LoST";
 const int 	SOFTWARE_VERSION_MAJOR = 1;
@@ -11,6 +12,8 @@ const int	SOFTWARE_VERSION_PATCH = 0;
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
 
+
+// Entry point for the game
 int main(int argc, char* args[]) {
 	// Error code
 	int err_code = 0;

@@ -2,24 +2,23 @@
 #include <string>
 #include "game.hpp"
 
+
 Game::Game(std::string title, int width, int height) {
     m_title = title;
-    m_window = NULL;
-    m_screen = NULL;
     m_width = width;
     m_height = height;
-    m_inited = true;
-    m_quit = false;
 
     // Initialize SDL
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
 		std::cerr << "Couldn't initialize SDL: " << SDL_GetError() << std::endl;
-        m_inited = false;
-	}
+	} else {
+        m_inited = true;
+    }
 
     // Clean up on exit
 	atexit(SDL_Quit);
 }
+
 
 Game::~Game() {
     if (!m_inited) {
@@ -29,6 +28,7 @@ Game::~Game() {
     // Destroy window
     SDL_DestroyWindow(m_window);
 }
+
 
 int Game::setup() {
 	m_window = SDL_CreateWindow(m_title.c_str(),
@@ -53,6 +53,7 @@ int Game::setup() {
 
     return 0;
 }
+
 
 int Game::loop() {
     if (!m_inited) {
