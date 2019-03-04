@@ -10,7 +10,12 @@
 *.app
 *.exe
 *.out
-LoST
+
+# Downloaded libraries
+SDL2/
+
+# Build folder
+build/
 
 # CMake
 CMakeFiles/
