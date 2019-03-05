@@ -7,8 +7,10 @@ LoST is loosely based on a fictional video game described in the short story *Na
 ## Build instructions
 
 * Install cmake version >= 3.7.
-* Install SDL2 libraries locally (if on Windows, extract VC libraries to \<project root\>/SDL2).
-* In a terminal from the root folder type:
+* Install SDL2 development libraries (if on Windows, extract VC development libraries to \<project root\>/SDL2).
+
+### macOS and Linux
+* In a terminal from the root folder, type:
 
     ```
     mkdir build
@@ -17,11 +19,38 @@ LoST is loosely based on a fictional video game described in the short story *Na
     cmake --build .
     ```
 
-* If compiling for Windows x64, replace `cmake ..` with:
+### Windows
+* Install Visual Studio (any version supported by cmake, see `cmake --help`)
+* In a cmd or MSYS/MinGW, type:
+
+    ```
+    mkdir build
+    cd build
+    cmake -G <platform> ..
+    cmake --build . --config <cfg>
+    ```
+
+    where `<platform>` is one of the Visual Studio versions listed when typing `cmake --help`
+
+    e.g.
 
     ```
     cmake -G "Visual Studio 15 2017 Win64" ..
     ```
-    or similar, depending on your Visual Studio version. Possible targets are listed in `cmake --help`.
+
+    and where `<cfg>` is one of:
+
+    * `Release`
+    * `RelWithDebInfo`
+    * `MinSizeRel`
+    * `Debug`
+
+    e.g.
+
+    ```
+    cmake --build . --config Release
+    ```
+
+    to build for those targets.
 
 * **NOTE:** If you can't run the compiled executable on Windows, copy SDL2.dll for the appropriate architecture into the executable's directory.
