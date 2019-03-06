@@ -13,6 +13,7 @@
 
 # Downloaded libraries
 SDL2/
+.windows-setup-cache/
 
 # Build folder
 build/
