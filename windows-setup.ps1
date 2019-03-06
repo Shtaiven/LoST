@@ -1,12 +1,23 @@
 param (
     [string]$sdl2_zip = "SDL2-devel-2.0.9-VC.zip",
     [string]$sdl2_image_zip = "SDL2_image-devel-2.0.4-VC.zip",
-    [switch]$cache = $FALSE
+    [switch]$cache = $FALSE,
+    [switch]$remove = $FALSE
 )
 
 # File and folder names
 $cache_path = "$($PSScriptRoot)\.windows-setup-cache"
 $unzip_path = "$($PSScriptRoot)\SDL2"
+
+# Remove files and exit if the argument was given
+if ($remove) {
+    Write-Host "Removing $($unzip_path)"
+    Remove-Item $unzip_path -Force -Recurse -ErrorAction SilentlyContinue
+    Write-Host "Removing $($cache_path)"
+    Remove-Item $cache_path -Force -Recurse -ErrorAction SilentlyContinue
+    Write-Host "Done"
+    exit
+}
 
 # Setup Yes/No choices
 $choices = New-Object Collections.ObjectModel.Collection[Management.Automation.Host.ChoiceDescription]
@@ -48,7 +59,7 @@ if ($sdl2_files -And $sdl2_image_files) {
     Write-Host "Consolidating files into $($unzip_path)"
     $expanded = Get-ChildItem -Path $unzip_path -Filter "SDL2*" -ErrorAction SilentlyContinue -Force | ForEach-Object { $_.FullName }
     foreach ($folder in $expanded) {
-        Copy-Item -Path "$($folder)\*" -Destination "$($unzip_path)\" -Recurse -Force -ErrorAction SilentlyContinue
+        Copy-Item -Path "$($folder)\*" -Destination $unzip_path -Exclude "docs", "*.txt" -Recurse -Force -ErrorAction SilentlyContinue
         Remove-Item $folder -Force -Recurse -ErrorAction SilentlyContinue
     }
 } else {
