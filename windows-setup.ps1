@@ -5,8 +5,8 @@ param (
 )
 
 # File and folder names
-$cache_path = ".windows-setup-cache"
-$unzip_path = "SDL2"
+$cache_path = "$($PSScriptRoot)\.windows-setup-cache"
+$unzip_path = "$($PSScriptRoot)\SDL2"
 
 # Setup Yes/No choices
 $choices = New-Object Collections.ObjectModel.Collection[Management.Automation.Host.ChoiceDescription]
@@ -20,7 +20,7 @@ $sdl2_image_files = Get-ChildItem -Path $cache_path -Filter "SDL2_image-*.zip" -
 # Create a new folder for SDL2 libraries
 $download = 0
 try {
-    New-Item -Path . -Name $cache_path -ItemType "directory" -ErrorAction Stop | Out-Null
+    New-Item -Path $cache_path -ItemType "directory" -ErrorAction Stop | Out-Null
 } catch {
     if ($sdl2_files -And $sdl2_image_files) {
         $download = $Host.UI.PromptForChoice("SDL2 libraries already downloaded", "Download again?", $choices, 1)
@@ -45,19 +45,20 @@ if ($sdl2_files -And $sdl2_image_files) {
     Expand-Archive -Path "$($cache_path)\$($sdl2_zip)" -DestinationPath $unzip_path -Force
     Write-Host "Expanding $($sdl2_image_zip)"
     Expand-Archive -Path "$($cache_path)\$($sdl2_image_zip)" -DestinationPath $unzip_path -Force
-    $full_unzip_path = Resolve-Path $unzip_path
-    Write-Host "Consolidating files into $($full_unzip_path)"
+    Write-Host "Consolidating files into $($unzip_path)"
     $expanded = Get-ChildItem -Path $unzip_path -Filter "SDL2*" -ErrorAction SilentlyContinue -Force | ForEach-Object { $_.FullName }
     foreach ($folder in $expanded) {
         Copy-Item -Path "$($folder)\*" -Destination "$($unzip_path)\" -Recurse -Force -ErrorAction SilentlyContinue
         Remove-Item $folder -Force -Recurse -ErrorAction SilentlyContinue
     }
 } else {
-    Write-Error "SDL2 libraries didn't download. Please try again!"
+    Write-Host "SDL2 libraries didn't download. Please try again!"
 }
 
 # Clean up
-if (!$cache) {
+if (!$cache -And $cache_path) {
     Write-Host "Cleaning up"
     Remove-Item $cache_path -Force -Recurse -ErrorAction SilentlyContinue
 }
+
+Write-Host "Done"

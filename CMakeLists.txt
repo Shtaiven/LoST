@@ -4,20 +4,21 @@ project(LoST)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
 
+#Must be set to find SDL2 on Windows
 set(SDL2_DIR "${CMAKE_SOURCE_DIR}/SDL2")
 
 find_package(SDL2 REQUIRED)
+find_package(SDL2_image REQUIRED)
 
 include_directories("${SDL2_INCLUDE_DIRS}"
-                    "${CMAKE_SOURCE_DIR}/include"
-)
+                    "${SDL2_IMAGE_INCLUDE_DIRS}"
+                    "${CMAKE_SOURCE_DIR}/include")
 
 file(GLOB_RECURSE SOURCES
-    "${CMAKE_SOURCE_DIR}/src/*.cpp"
-)
+    "${CMAKE_SOURCE_DIR}/src/*.cpp")
 
 add_executable(LoST WIN32 ${SOURCES})
-target_link_libraries(LoST ${SDL2_LIBRARIES})
+target_link_libraries(LoST ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES})
 
 if(WIN32)
     add_custom_command(TARGET LoST POST_BUILD          # Adds a post-build event to target

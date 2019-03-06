@@ -7,12 +7,12 @@ LoST is loosely based on a fictional video game described in the short story *Na
 ## Build instructions
 
 * Install cmake version >= 3.7.
-* Install SDL2 development libraries (if on Windows, extract VC development libraries to \<project root\>/SDL2).
 
 ### macOS and Linux
-* In a terminal from the root folder, type:
+* Install [SDL2](https://www.libsdl.org/download-2.0.php) and [SDL2_image](https://www.libsdl.org/projects/SDL_image/) development libraries for your platform.
+* In a terminal window from the root folder, type:
 
-    ```
+    ```bash
     mkdir build
     cd build
     cmake ..
@@ -21,9 +21,18 @@ LoST is loosely based on a fictional video game described in the short story *Na
 
 ### Windows
 * Install Visual Studio (any version supported by cmake, see `cmake --help`)
-* In a cmd or MSYS/MinGW, type:
+* In a PowerShell window, type:
 
+    ```PowerShell
+    Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
+    .\windows-setup.ps1
     ```
+
+    then wait for the script to complete.
+
+* In a PowerShell, cmd, or MinGW/MSYS window, type:
+
+    ```PowerShell
     mkdir build
     cd build
     cmake -G <platform> ..
@@ -34,7 +43,7 @@ LoST is loosely based on a fictional video game described in the short story *Na
 
     e.g.
 
-    ```
+    ```PowerShell
     cmake -G "Visual Studio 15 2017 Win64" ..
     ```
 
@@ -47,7 +56,7 @@ LoST is loosely based on a fictional video game described in the short story *Na
 
     e.g.
 
-    ```
+    ```PowerShell
     cmake --build . --config Release
     ```
 
