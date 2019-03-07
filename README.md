@@ -9,6 +9,7 @@ LoST is loosely based on a fictional video game described in the short story *Na
 * Install cmake version >= 3.7.
 
 ### macOS and Linux
+
 * Install [SDL2](https://www.libsdl.org/download-2.0.php) and [SDL2_image](https://www.libsdl.org/projects/SDL_image/) development libraries for your platform.
 * In a terminal window from the root folder, type:
 
@@ -20,12 +21,13 @@ LoST is loosely based on a fictional video game described in the short story *Na
     ```
 
 ### Windows
+
 * Install Visual Studio (any version supported by cmake, see `cmake --help`)
 * In a PowerShell window, type:
 
     ```PowerShell
     Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
-    .\windows-setup.ps1
+    .\windows-setup-sdl2.ps1
     ```
 
     then wait for the script to complete.
@@ -36,7 +38,7 @@ LoST is loosely based on a fictional video game described in the short story *Na
     mkdir build
     cd build
     cmake -G <platform> ..
-    cmake --build . --config <cfg>
+    cmake --build .
     ```
 
     where `<platform>` is one of the Visual Studio versions listed when typing `cmake --help`
@@ -47,7 +49,13 @@ LoST is loosely based on a fictional video game described in the short story *Na
     cmake -G "Visual Studio 15 2017 Win64" ..
     ```
 
-    and where `<cfg>` is one of:
+    Optionally, you can build using:
+
+    ```PowerShell
+    cmake --build . --config <cfg>
+    ```
+
+    where `<cfg>` is one of:
 
     * `Release`
     * `RelWithDebInfo`
