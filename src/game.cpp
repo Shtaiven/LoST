@@ -3,6 +3,7 @@
 #include "game.hpp"
 
 
+// Initialize the game with a window width and height, and a title
 Game::Game(std::string title, int width, int height) {
     m_title = title;
     m_width = width;
@@ -20,9 +21,16 @@ Game::Game(std::string title, int width, int height) {
 }
 
 
+// Destructor
 Game::~Game() {
+    close();
+}
+
+
+void Game::close() {
     // Destroy window
     SDL_DestroyWindow(m_window);
+    m_window = NULL;
 }
 
 
@@ -37,12 +45,18 @@ int Game::setup() {
         std::cerr << "Couldn't create window: " << SDL_GetError() << std::endl;
         return 1;
     }
+    std::cout << "Created window" << std::endl;
 
     // Get window surface
-    m_screen = SDL_GetWindowSurface(m_window);
+    m_screen_surface = SDL_GetWindowSurface(m_window);
 
     // Fill the surface black
-    SDL_FillRect(m_screen, NULL, SDL_MapRGB(m_screen->format, 0x00, 0x00, 0x00));
+    SDL_FillRect(m_screen_surface, NULL, SDL_MapRGB(m_screen_surface->format, 0x00, 0x00, 0x00));
+
+    // Create a character sprite
+    m_player = Sprite("../../assets/icon.bmp");
+    m_player.load();
+    m_player.blit(m_screen_surface);
 
     // Update the surface
     SDL_UpdateWindowSurface(m_window);

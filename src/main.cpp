@@ -25,6 +25,7 @@ int main(int argc, char* args[]) {
                  << SOFTWARE_VERSION_MINOR << "."
                  << SOFTWARE_VERSION_PATCH;
 
+    std::cout << "Starting " << window_title.str() << std::endl;
     Game game(window_title.str(), SCREEN_WIDTH, SCREEN_HEIGHT);
 
     err_code = game.setup();
@@ -33,5 +34,6 @@ int main(int argc, char* args[]) {
         game.loop();
     }
 
+    std::cout << "Exiting with code " << err_code << std::endl;
     return err_code;
 }

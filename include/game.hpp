@@ -3,6 +3,7 @@
 
 #include "SDL.h"
 #include <string>
+#include "sprite.hpp"
 
 
 // Game class creates SDL game window and listens to events
@@ -12,15 +13,17 @@ class Game {
         ~Game();
         int setup();
         int loop();
+        void close();
 
     private:
         SDL_Window* m_window = NULL;
-        SDL_Surface* m_screen = NULL;
+        SDL_Surface* m_screen_surface = NULL;
         bool m_quit = false;
         bool m_inited = false;
         int m_width;
         int m_height;
         std::string m_title;
+        Sprite m_player;
 };
 
 
