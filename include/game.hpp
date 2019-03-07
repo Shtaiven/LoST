@@ -14,6 +14,7 @@ class Game {
         int setup();
         int loop();
         void close();
+        void update();
 
     private:
         SDL_Window* m_window = NULL;
@@ -23,7 +24,7 @@ class Game {
         int m_width;
         int m_height;
         std::string m_title;
-        Sprite m_player;
+        Player m_player;
 };
 
 

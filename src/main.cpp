@@ -4,8 +4,8 @@
 
 // Software version constants
 const char* SOFTWARE_NAME = "LoST";
-const int 	SOFTWARE_VERSION_MAJOR = 1;
-const int 	SOFTWARE_VERSION_MINOR = 0;
+const int 	SOFTWARE_VERSION_MAJOR = 0;
+const int 	SOFTWARE_VERSION_MINOR = 1;
 const int	SOFTWARE_VERSION_PATCH = 0;
 
 // Screen dimension constants

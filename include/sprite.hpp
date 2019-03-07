@@ -15,9 +15,18 @@ class Sprite {
         bool load();
         void blit(SDL_Surface* dst);
 
-    private:
+    protected:
         std::string m_file;
         SDL_Surface* m_sprite_surface = NULL;
+        SDL_Rect m_rect = {0};
+};
+
+
+// Player class that adds event handling to sprite
+class Player : public Sprite {
+    public:
+        Player(std::string file=""): Sprite(file) {}
+        void handleEvent(const SDL_Event& e);
 };
 
 

@@ -50,18 +50,26 @@ int Game::setup() {
     // Get window surface
     m_screen_surface = SDL_GetWindowSurface(m_window);
 
+    // Create a character sprite
+    m_player = Player("../../assets/icon.bmp");
+    m_player.load();
+
+    // Update the surface
+    update();
+
+    return 0;
+}
+
+
+void Game::update() {
     // Fill the surface black
     SDL_FillRect(m_screen_surface, NULL, SDL_MapRGB(m_screen_surface->format, 0x00, 0x00, 0x00));
 
-    // Create a character sprite
-    m_player = Sprite("../../assets/icon.bmp");
-    m_player.load();
+    // Blit the player to the screen
     m_player.blit(m_screen_surface);
 
     // Update the surface
     SDL_UpdateWindowSurface(m_window);
-
-    return 0;
 }
 
 
@@ -74,12 +82,22 @@ int Game::loop() {
     // Allow the window to be drawn and wait for a quit event
     bool quit = false;
     SDL_Event e;
+
+    // While the game is running
     while (!quit) {
+        // Handle events in the event queue
         while (SDL_PollEvent(&e)) {
+            // User asks to quit
             if (e.type == SDL_QUIT) {
                 quit = true;
+            } else {
+                // Handle player keyboard events
+                m_player.handleEvent(e);
             }
         }
+
+        // Update game state and draw to window
+        update();
     }
 
     return 0;
