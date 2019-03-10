@@ -72,17 +72,24 @@ void Sprite::set_position(int x, int y) {
 
 
 // Handle incoming events
-void Player::handleEvent(const SDL_Event& e)
+void Player::handleEvent(const SDL_Event& e, const SDL_Surface *screen_surface)
 {
     // TODO: Handle keyboard events
     if (e.type == SDL_KEYDOWN)
     {
         if (e.key.keysym.sym == SDLK_LEFT) {
             m_rect.x -= 10;
+            if (m_rect.x < 0) {
+                m_rect.x = 0;
+            }
         }
 
         if (e.key.keysym.sym == SDLK_RIGHT) {
             m_rect.x += 10;
+            if (m_rect.x > screen_surface->w - m_sprite_surface->w) {
+                m_rect.x = screen_surface->w - m_sprite_surface->w;
+            }
+
         }
     }
 }

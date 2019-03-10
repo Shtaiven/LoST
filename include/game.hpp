@@ -17,6 +17,7 @@ class Game {
         void update();
 
     private:
+        friend class Sprite;
         SDL_Window* m_window = NULL;
         SDL_Surface* m_screen_surface = NULL;
         bool m_quit = false;

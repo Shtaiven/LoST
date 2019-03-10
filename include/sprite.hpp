@@ -31,7 +31,7 @@ class Sprite {
 class Player : public Sprite {
     public:
         Player(std::string file=""): Sprite(file) {}
-        void handleEvent(const SDL_Event& e);
+        void handleEvent(const SDL_Event& e, const SDL_Surface *screen_surface);
 };
 
 

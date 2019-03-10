@@ -94,7 +94,7 @@ int Game::loop() {
                 quit = true;
             } else {
                 // Handle player keyboard events
-                m_player.handleEvent(e);
+                m_player.handleEvent(e, m_screen_surface);
             }
         }
 
