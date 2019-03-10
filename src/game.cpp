@@ -53,6 +53,8 @@ int Game::setup() {
     // Create a character sprite
     m_player = Player("../../assets/icon.bmp");
     m_player.load();
+    m_player.set_position((m_screen_surface->w - m_player.w())/2,
+                          m_screen_surface->h - m_player.h());
 
     // Update the surface
     update();

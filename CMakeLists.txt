@@ -22,7 +22,7 @@ file(GLOB_RECURSE SOURCES
     "${CMAKE_SOURCE_DIR}/src/*.h"
     "${CMAKE_SOURCE_DIR}/src/*.c")
 
-add_executable(LoST WIN32 ${SOURCES})
+add_executable(LoST ${SOURCES})
 target_link_libraries(LoST ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES})
 
 if(WIN32)

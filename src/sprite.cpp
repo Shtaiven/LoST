@@ -18,7 +18,7 @@ void Sprite::close() {
 }
 
 
-bool Sprite::load() {
+bool Sprite::load(int x, int y) {
     // Load the sprite image
     m_sprite_surface = SDL_LoadBMP(m_file.c_str());
     if (!m_sprite_surface) {
@@ -31,6 +31,8 @@ bool Sprite::load() {
     }
     m_rect.w = m_sprite_surface->w;
     m_rect.h = m_sprite_surface->h;
+    m_rect.x = x;
+    m_rect.y = y;
 
     return true;
 }
@@ -43,32 +45,44 @@ void Sprite::blit(SDL_Surface* dst) {
 }
 
 
+int Sprite::x() {
+    return m_rect.x;
+}
+
+
+int Sprite::y() {
+    return m_rect.y;
+}
+
+
+int Sprite::w() {
+    return m_rect.w;
+}
+
+
+int Sprite::h() {
+    return m_rect.h;
+}
+
+
+void Sprite::set_position(int x, int y) {
+    m_rect.x = x;
+    m_rect.y = y;
+}
+
+
 // Handle incoming events
 void Player::handleEvent(const SDL_Event& e)
 {
     // TODO: Handle keyboard events
     if (e.type == SDL_KEYDOWN)
     {
-        switch (e.key.keysym.sym)
-        {
-            case SDLK_UP:
-                m_rect.y -= 2;
-                break;
+        if (e.key.keysym.sym == SDLK_LEFT) {
+            m_rect.x -= 10;
+        }
 
-            case SDLK_DOWN:
-                m_rect.y += 2;
-                break;
-
-            case SDLK_LEFT:
-                m_rect.x -= 2;
-                break;
-
-            case SDLK_RIGHT:
-                m_rect.x += 2;
-                break;
-
-            default:
-                break;
+        if (e.key.keysym.sym == SDLK_RIGHT) {
+            m_rect.x += 10;
         }
     }
 }

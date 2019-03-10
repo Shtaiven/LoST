@@ -12,8 +12,13 @@ class Sprite {
         Sprite(std::string file="");
         ~Sprite();
         void close();
-        bool load();
+        bool load(int x=0, int y=0);
         void blit(SDL_Surface* dst);
+        int x();
+        int y();
+        int w();
+        int h();
+        void set_position(int x, int y);
 
     protected:
         std::string m_file;
