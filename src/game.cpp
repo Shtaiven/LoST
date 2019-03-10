@@ -26,6 +26,7 @@ Game::Game(std::string title, int width, int height) {
 
     // Clean up on exit
     atexit(SDL_Quit);
+    atexit(IMG_Quit);
 }
 
 
