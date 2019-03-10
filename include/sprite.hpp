@@ -12,8 +12,8 @@ class Sprite {
         Sprite(std::string file="");
         ~Sprite();
         void close();
-        bool load(int x=0, int y=0);
-        void blit(SDL_Surface* dst);
+        bool load(SDL_Surface* screen_surface, const SDL_Rect* stretch_rect=NULL, int x=0, int y=0);
+        void blit();
         int x();
         int y();
         int w();
@@ -23,7 +23,10 @@ class Sprite {
     protected:
         std::string m_file;
         SDL_Surface* m_sprite_surface = NULL;
+        SDL_Surface* m_screen_surface = NULL;
+        SDL_Rect* m_stretch_rect = NULL;
         SDL_Rect m_rect = {0};
+        bool screenSurfaceNull(std::string func="");
 };
 
 
@@ -31,7 +34,7 @@ class Sprite {
 class Player : public Sprite {
     public:
         Player(std::string file=""): Sprite(file) {}
-        void handleEvent(const SDL_Event& e, const SDL_Surface *screen_surface);
+        void handleEvent(const SDL_Event& e);
 };
 
 

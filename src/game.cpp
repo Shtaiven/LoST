@@ -52,7 +52,10 @@ int Game::setup() {
 
     // Create a character sprite
     m_player = Player("../../assets/icon.bmp");
-    m_player.load();
+    SDL_Rect stretch = {0};
+    stretch.w = 300;
+    stretch.h = 300;
+    m_player.load(m_screen_surface, &stretch);
     m_player.set_position((m_screen_surface->w - m_player.w())/2,
                           m_screen_surface->h - m_player.h());
 
@@ -68,7 +71,7 @@ void Game::update() {
     SDL_FillRect(m_screen_surface, NULL, SDL_MapRGB(m_screen_surface->format, 0x00, 0x00, 0x00));
 
     // Blit the player to the screen
-    m_player.blit(m_screen_surface);
+    m_player.blit();
 
     // Update the surface
     SDL_UpdateWindowSurface(m_window);
@@ -94,7 +97,7 @@ int Game::loop() {
                 quit = true;
             } else {
                 // Handle player keyboard events
-                m_player.handleEvent(e, m_screen_surface);
+                m_player.handleEvent(e);
             }
         }
 
