@@ -28,8 +28,10 @@ int main(int argc, char* args[]) {
     std::cout << "Starting " << window_title.str() << std::endl;
     Game game(window_title.str(), SCREEN_WIDTH, SCREEN_HEIGHT);
 
+    // Run 1-time init of game
     err_code = game.setup();
 
+    // Run the main game loop
     if (!err_code) {
         game.loop();
     }

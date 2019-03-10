@@ -1,3 +1,4 @@
+#include "SDL_image.h"
 #include <iostream>
 #include <string>
 #include "game.hpp"
@@ -5,6 +6,7 @@
 
 // Initialize the game with a window width and height, and a title
 Game::Game(std::string title, int width, int height) {
+    m_inited = false;
     m_title = title;
     m_width = width;
     m_height = height;
@@ -13,7 +15,13 @@ Game::Game(std::string title, int width, int height) {
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         std::cerr << "Couldn't initialize SDL: " << SDL_GetError() << std::endl;
     } else {
-        m_inited = true;
+        //Initialize PNG loading
+        int imgFlags = IMG_INIT_PNG;
+        if (!( IMG_Init(imgFlags) & imgFlags )) {
+            std::cerr << "Couldn't initialize SDL_image: " << IMG_GetError() << std::endl;
+        } else {
+            m_inited = true;
+        }
     }
 
     // Clean up on exit
@@ -51,7 +59,7 @@ int Game::setup() {
     m_screen_surface = SDL_GetWindowSurface(m_window);
 
     // Create a character sprite
-    m_player = Player("../../assets/icon.bmp");
+    m_player = Player("../../assets/icon.png");
     SDL_Rect stretch = {0};
     stretch.w = 300;
     stretch.h = 300;

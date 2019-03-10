@@ -1,3 +1,4 @@
+#include "SDL_image.h"
 #include "sprite.hpp"
 
 
@@ -26,12 +27,12 @@ bool Sprite::load(SDL_Surface* screen_surface, const SDL_Rect* stretch_rect, int
     bool result = true;
 
     // Load the sprite image
-    SDL_Surface *temp_surface = SDL_LoadBMP(m_file.c_str());
+    SDL_Surface *temp_surface = IMG_Load(m_file.c_str());
     if (!temp_surface) {
         std::cerr << "Unable to load image "
                   << m_file
-                  << "! SDL Error: "
-                  << SDL_GetError()
+                  << "! SDL_image Error: "
+                  << IMG_GetError()
                   << std::endl;
         result = false;
     }
@@ -111,6 +112,7 @@ void Sprite::set_position(int x, int y) {
     m_rect.y = y;
 }
 
+
 bool Sprite::screenSurfaceNull(std::string func) {
     if (!m_screen_surface) {
         std::cerr << "Sprite wasn't loaded before function call";
@@ -123,12 +125,13 @@ bool Sprite::screenSurfaceNull(std::string func) {
     return false;
 }
 
+
 // Handle incoming events
 void Player::handleEvent(const SDL_Event& e)
 {
     if (screenSurfaceNull("handleEvent")) return;
 
-    // TODO: Handle keyboard events
+    // Handle keyboard events
     if (e.type == SDL_KEYDOWN)
     {
         if (e.key.keysym.sym == SDLK_LEFT) {
