@@ -55,10 +55,17 @@ bool Sprite::load(std::string file, SDL_Renderer* renderer, const SDL_Rect* info
 }
 
 
-// Blit the sprite to the dst surface
+// Render the sprite
 int Sprite::render() {
     //Apply the image
     return SDL_RenderCopy(m_renderer, m_texture, NULL, &m_info);
+}
+
+
+// Render the sprite to a specific location
+int Sprite::render(int x, int y) {
+    setPosition(x, y);
+    return render();
 }
 
 
@@ -83,8 +90,7 @@ void Sprite::setPosition(int x, int y) {
 
 
 void Sprite::setPosition(const SDL_Rect* pos) {
-    m_info.x = pos->x;
-    m_info.y = pos->y;
+    setPosition(pos->x, pos->y);
 }
 
 
@@ -95,8 +101,7 @@ void Sprite::setSize(int w, int h) {
 
 
 void Sprite::setSize(const SDL_Rect* size) {
-    m_info.w = size->w;
-    m_info.h = size->h;
+    setSize(size->w, size->h);
 }
 
 
