@@ -9,31 +9,30 @@
 // Sprite class manages sprites (character, enemies, etc)
 class Sprite {
     public:
-        Sprite(std::string file="");
+        Sprite();
         ~Sprite();
         void close();
-        bool load(SDL_Surface* screen_surface, const SDL_Rect* stretch_rect=NULL, int x=0, int y=0);
-        void blit();
-        int x();
-        int y();
-        int w();
-        int h();
+        bool load(std::string file, const SDL_Rect* info=NULL);
+        void render(const SDL_Renderer* renderer);
+        void get_info(SDL_Rect* buf);
+        void set_info(const SDL_Rect* info);
         void set_position(int x, int y);
+        void set_position(const SDL_Rect* pos);
+        void set_size(int w, int h);
+        void set_size(const SDL_Rect* size);
 
     protected:
-        std::string m_file;
-        SDL_Surface* m_sprite_surface = NULL;
-        SDL_Surface* m_screen_surface = NULL;
-        SDL_Rect* m_stretch_rect = NULL;
-        SDL_Rect m_rect = {0};
-        bool screenSurfaceNull(std::string func="");
+        std::string m_file = "";
+        SDL_Texture* m_sprite_texture = NULL;
+        SDL_Rect m_info = {0};
+        bool noLoad(std::string func_name="");
 };
 
 
 // Player class that adds event handling to sprite
 class Player : public Sprite {
     public:
-        Player(std::string file=""): Sprite(file) {}
+        Player(): Sprite() {}
         void handleEvent(const SDL_Event& e);
 };
 

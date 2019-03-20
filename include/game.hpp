@@ -19,7 +19,7 @@ class Game {
     private:
         friend class Sprite;
         SDL_Window* m_window = NULL;
-        SDL_Surface* m_screen_surface = NULL;
+        SDL_Renderer* m_renderer = NULL;
         bool m_quit = false;
         bool m_inited = false;
         int m_width;
