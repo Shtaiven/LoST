@@ -77,7 +77,7 @@ int Game::setup()
     std::cout << "Created renderer" << std::endl;
 
     // Set renderer draw color to black
-    SDL_SetRenderDrawColor(m_renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+    SDL_SetRenderDrawColor(m_renderer, 0x00, 0x00, 0x00, 0xFF);
 
     // Create a character sprite
     m_player = Player();
@@ -103,7 +103,7 @@ void Game::update()
     m_player.render();
 
     // Update the surface
-    SDL_RendererFlip(m_renderer);
+    SDL_RenderPresent(m_renderer);
 }
 
 int Game::loop()

@@ -54,11 +54,9 @@ bool Sprite::load(std::string file, SDL_Renderer* renderer, const SDL_Rect* info
 
 
 // Blit the sprite to the dst surface
-void Sprite::render() {
-    if (noLoad("render")) return;
-
+int Sprite::render() {
     //Apply the image
-    SDL_RenderCopy(m_renderer, m_texture, NULL, &m_info);
+    return SDL_RenderCopy(m_renderer, m_texture, NULL, &m_info);
 }
 
 
