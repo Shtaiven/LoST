@@ -12,18 +12,18 @@ Sprite::~Sprite() {
 
 void Sprite::close() {
     // Deallocate the texture
-    SDL_DestroyTexture(m_sprite_texture);
-    m_sprite_texture = NULL;
+    SDL_DestroyTexture(m_texture);
+    m_texture = NULL;
 }
 
 
-bool Sprite::load(std::string file, const SDL_Rect* info) {
+bool Sprite::load(std::string file, SDL_Renderer* renderer, const SDL_Rect* info) {
     bool result = true;
 
     // Load the sprite image
     SDL_Surface *temp_surface = IMG_Load(file.c_str());
     if (!temp_surface) {
-        std::cerr << "Unable to load image "
+        std::cerr << "Unable to load image from "
                   << file
                   << "! SDL_image Error: "
                   << IMG_GetError()
@@ -32,9 +32,9 @@ bool Sprite::load(std::string file, const SDL_Rect* info) {
     }
 
     // Optimize image performance
-    m_sprite_surface = SDL_ConvertSurface(temp_surface, screen_surface->format, NULL);
-    if (!m_sprite_surface) {
-        std::cerr << "Unable to optimize image "
+    m_texture = SDL_CreateTextureFromSurface(renderer, temp_surface);
+    if (!m_texture) {
+        std::cerr << "Unable to create texture from "
                   << file
                   << "! SDL Error: "
                   << SDL_GetError()
@@ -42,27 +42,23 @@ bool Sprite::load(std::string file, const SDL_Rect* info) {
         result = false;
     }
 
-    // Free memory of temp_surface and store new surface
+    // Free memory of temp_surface
     SDL_FreeSurface(temp_surface);
 
-    set_info(info);
+    // Save info for later use during rendering
+    if (info) set_info(info);
+    m_renderer = renderer;
 
     return result;
 }
 
 
 // Blit the sprite to the dst surface
-void Sprite::render(const SDL_Renderer* renderer) {
-    if (noLoad("blit")) return;
+void Sprite::render() {
+    if (noLoad("render")) return;
 
     //Apply the image
-    if (m_stretch_rect) {
-        m_stretch_rect->x = m_info.x;
-        m_stretch_rect->y = m_info.y;
-        SDL_BlitScaled(m_sprite_surface, NULL, m_screen_surface, m_stretch_rect);
-    } else {
-        SDL_BlitSurface(m_sprite_surface, NULL, m_screen_surface, &m_info);
-    }
+    SDL_RenderCopy(m_renderer, m_texture, NULL, &m_info);
 }
 
 
@@ -105,7 +101,7 @@ void Sprite::set_size(const SDL_Rect* size) {
 
 
 bool Sprite::noLoad(std::string func_name) {
-    if (!m_sprite_texture) {
+    if (!m_texture) {
         std::cerr << "Sprite wasn't loaded before function call";
         if (func_name != "") {
             std::cerr << " " << func_name;
@@ -125,6 +121,9 @@ void Player::handleEvent(const SDL_Event& e)
     // Handle keyboard events
     if (e.type == SDL_KEYDOWN)
     {
+        int max_w, max_h;
+        SDL_GetRendererOutputSize(m_renderer, &max_w, &max_h);
+
         if (e.key.keysym.sym == SDLK_LEFT) {
             m_info.x -= 10;
             if (m_info.x < 0) {
@@ -134,8 +133,8 @@ void Player::handleEvent(const SDL_Event& e)
 
         if (e.key.keysym.sym == SDLK_RIGHT) {
             m_info.x += 10;
-            if (m_info.x > m_screen_surface->w - m_info.w) {
-                m_info.x = m_screen_surface->w - m_info.w;
+            if (m_info.x > max_w - m_info.w) {
+                m_info.x = max_w - m_info.w;
             }
 
         }

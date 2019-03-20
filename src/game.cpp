@@ -46,6 +46,10 @@ void Game::close()
     // Destroy window
     SDL_DestroyWindow(m_window);
     m_window = NULL;
+
+    // Destroy renderer
+    SDL_DestroyRenderer(m_renderer);
+    m_renderer = NULL;
 }
 
 int Game::setup()
@@ -76,13 +80,13 @@ int Game::setup()
     SDL_SetRenderDrawColor(m_renderer, 0xFF, 0xFF, 0xFF, 0xFF);
 
     // Create a character sprite
-    m_player = Player("../../assets/icon.png");
-    SDL_Rect stretch = {0};
-    stretch.w = 300;
-    stretch.h = 300;
-    m_player.load(&stretch);
-    m_player.set_position((m_width - m_player.get_w()) / 2,
-                          m_height - m_player.get_h());
+    m_player = Player();
+    SDL_Rect player_info = {0};
+    player_info.w = 300;
+    player_info.h = 300;
+    player_info.x = (m_width - player_info.w) / 2;
+    player_info.y = m_height - player_info.h;
+    if (!m_player.load("../../assets/icon.png", m_renderer, &player_info)) return 1;
 
     // Update the surface
     update();
@@ -96,7 +100,7 @@ void Game::update()
     SDL_RenderClear(m_renderer);
 
     // Render the player to the screen
-    m_player.render(m_renderer);
+    m_player.render();
 
     // Update the surface
     SDL_RendererFlip(m_renderer);

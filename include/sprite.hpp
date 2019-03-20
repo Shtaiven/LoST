@@ -12,8 +12,8 @@ class Sprite {
         Sprite();
         ~Sprite();
         void close();
-        bool load(std::string file, const SDL_Rect* info=NULL);
-        void render(const SDL_Renderer* renderer);
+        bool load(std::string file, SDL_Renderer* renderer, const SDL_Rect* info=NULL);
+        void render();
         void get_info(SDL_Rect* buf);
         void set_info(const SDL_Rect* info);
         void set_position(int x, int y);
@@ -23,7 +23,8 @@ class Sprite {
 
     protected:
         std::string m_file = "";
-        SDL_Texture* m_sprite_texture = NULL;
+        SDL_Texture* m_texture = NULL;
+        SDL_Renderer* m_renderer = NULL;
         SDL_Rect m_info = {0};
         bool noLoad(std::string func_name="");
 };
