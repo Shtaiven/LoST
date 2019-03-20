@@ -14,12 +14,13 @@ class Sprite {
         void close();
         bool load(std::string file, SDL_Renderer* renderer, const SDL_Rect* info=NULL);
         int render();
-        void get_info(SDL_Rect* buf);
-        void set_info(const SDL_Rect* info);
-        void set_position(int x, int y);
-        void set_position(const SDL_Rect* pos);
-        void set_size(int w, int h);
-        void set_size(const SDL_Rect* size);
+        void getInfo(SDL_Rect* buf);
+        void setInfo(const SDL_Rect* info);
+        void setPosition(int x, int y);
+        void setPosition(const SDL_Rect* pos);
+        void setSize(int w, int h);
+        void setSize(const SDL_Rect* size);
+        virtual void handleEvent(const SDL_Event& e) {}
 
     protected:
         std::string m_file = "";
@@ -33,7 +34,6 @@ class Sprite {
 // Player class that adds event handling to sprite
 class Player : public Sprite {
     public:
-        Player(): Sprite() {}
         void handleEvent(const SDL_Event& e);
 };
 

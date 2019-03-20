@@ -46,7 +46,7 @@ bool Sprite::load(std::string file, SDL_Renderer* renderer, const SDL_Rect* info
     SDL_FreeSurface(temp_surface);
 
     // Save info for later use during rendering
-    if (info) set_info(info);
+    if (info) setInfo(info);
     m_renderer = renderer;
 
     return result;
@@ -60,39 +60,39 @@ int Sprite::render() {
 }
 
 
-void Sprite::get_info(SDL_Rect* buf) {
+void Sprite::getInfo(SDL_Rect* buf) {
     if (buf) {
         memcpy(buf, &m_info, sizeof(SDL_Rect));
     }
 }
 
 
-void Sprite::set_info(const SDL_Rect* info) {
+void Sprite::setInfo(const SDL_Rect* info) {
     if (info) {
         memcpy(&m_info, info, sizeof(SDL_Rect));
     }
 }
 
 
-void Sprite::set_position(int x, int y) {
+void Sprite::setPosition(int x, int y) {
     m_info.x = x;
     m_info.y = y;
 }
 
 
-void Sprite::set_position(const SDL_Rect* pos) {
+void Sprite::setPosition(const SDL_Rect* pos) {
     m_info.x = pos->x;
     m_info.y = pos->y;
 }
 
 
-void Sprite::set_size(int w, int h) {
+void Sprite::setSize(int w, int h) {
     m_info.w = w;
     m_info.h = h;
 }
 
 
-void Sprite::set_size(const SDL_Rect* size) {
+void Sprite::setSize(const SDL_Rect* size) {
     m_info.w = size->w;
     m_info.h = size->h;
 }

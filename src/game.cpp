@@ -19,8 +19,8 @@ Game::Game(std::string title, int width, int height)
     else
     {
         //Initialize PNG loading
-        int imgFlags = IMG_INIT_PNG;
-        if (!(IMG_Init(imgFlags) & imgFlags))
+        int img_flags = IMG_INIT_PNG;
+        if (!(IMG_Init(img_flags) & img_flags))
         {
             std::cerr << "Couldn't initialize SDL_image: " << IMG_GetError() << std::endl;
         }
@@ -76,9 +76,6 @@ int Game::setup()
     }
     std::cout << "Created renderer" << std::endl;
 
-    // Set renderer draw color to black
-    SDL_SetRenderDrawColor(m_renderer, 0x00, 0x00, 0x00, 0xFF);
-
     // Create a character sprite
     m_player = Player();
     SDL_Rect player_info = {0};
@@ -96,13 +93,14 @@ int Game::setup()
 
 void Game::update()
 {
-    // Fill the surface black
+    // Fill the screen black
+    SDL_SetRenderDrawColor(m_renderer, 0x00, 0x00, 0x00, 0xFF);
     SDL_RenderClear(m_renderer);
 
     // Render the player to the screen
     m_player.render();
 
-    // Update the surface
+    // Update the screen
     SDL_RenderPresent(m_renderer);
 }
 
