@@ -11,7 +11,7 @@ class Sprite {
     public:
         Sprite();
         ~Sprite();
-        void close();
+        void free();
         bool load(std::string file, SDL_Renderer* renderer, const SDL_Rect* info=NULL);
         int render();
         void getInfo(SDL_Rect* buf);

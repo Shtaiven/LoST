@@ -6,19 +6,23 @@ Sprite::Sprite() {}
 
 
 Sprite::~Sprite() {
-    close();
+    free();
 }
 
 
-void Sprite::close() {
-    // Deallocate the texture
-    SDL_DestroyTexture(m_texture);
-    m_texture = NULL;
+void Sprite::free() {
+    if (m_texture) {
+        // Deallocate the texture
+        SDL_DestroyTexture(m_texture);
+        m_texture = NULL;
+        memset(&m_info, 0, sizeof(m_info));
+    }
 }
 
 
 bool Sprite::load(std::string file, SDL_Renderer* renderer, const SDL_Rect* info) {
-    bool result = true;
+    // Remove previous texture
+    free();
 
     // Load the sprite image
     SDL_Surface *temp_surface = IMG_Load(file.c_str());
@@ -28,7 +32,6 @@ bool Sprite::load(std::string file, SDL_Renderer* renderer, const SDL_Rect* info
                   << "! SDL_image Error: "
                   << IMG_GetError()
                   << std::endl;
-        result = false;
     }
 
     // Optimize image performance
@@ -39,7 +42,6 @@ bool Sprite::load(std::string file, SDL_Renderer* renderer, const SDL_Rect* info
                   << "! SDL Error: "
                   << SDL_GetError()
                   << std::endl;
-        result = false;
     }
 
     // Free memory of temp_surface
@@ -49,7 +51,7 @@ bool Sprite::load(std::string file, SDL_Renderer* renderer, const SDL_Rect* info
     if (info) setInfo(info);
     m_renderer = renderer;
 
-    return result;
+    return (bool) m_texture;
 }
 
 
