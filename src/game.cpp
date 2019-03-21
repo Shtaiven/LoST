@@ -68,7 +68,7 @@ int Game::setup()
     std::cout << "Created window" << std::endl;
 
     // Get window renderer
-    m_renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_ACCELERATED);
+    m_renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     if (m_renderer == NULL)
     {
         std::cerr << "Couldn't create renderer: " << SDL_GetError() << std::endl;

@@ -10,7 +10,7 @@ LoST is loosely based on a fictional video game described in the short story *Na
 
 ### macOS and Linux
 
-* Install [SDL2](https://www.libsdl.org/download-2.0.php) and [SDL2_image](https://www.libsdl.org/projects/SDL_image/) development libraries for your platform.
+* Install [SDL2](https://www.libsdl.org/download-2.0.php), [SDL2_image](https://www.libsdl.org/projects/SDL_image/), and [SDL2_ttf](https://www.libsdl.org/projects/SDL_ttf/) development libraries for your platform.
 * In a terminal window from the root folder, type:
 
     ```bash
@@ -27,7 +27,7 @@ LoST is loosely based on a fictional video game described in the short story *Na
 
     ```PowerShell
     Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
-    .\windows-setup-sdl2.ps1
+    .\install-sdl2-devel.ps1
     ```
 
     then wait for the script to complete.
@@ -70,4 +70,4 @@ LoST is loosely based on a fictional video game described in the short story *Na
 
     to build for those targets.
 
-* **NOTE:** If you can't run the compiled executable on Windows, copy SDL2.dll for the appropriate architecture into the executable's directory.
+* **NOTE:** If you can't run the compiled executable on Windows, copy SDL2.dll for the appropriate architecture into the executable's directory and run the compiled executable directly from there.
