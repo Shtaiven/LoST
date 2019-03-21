@@ -13,8 +13,8 @@ class Sprite {
         ~Sprite();
         void free();
         bool load(std::string file, SDL_Renderer* renderer, const SDL_Rect* info=NULL);
-        int render();
-        int render(int x, int y);
+        int render(const SDL_Rect* clip=NULL);
+        int render(int x, int y, const SDL_Rect* clip=NULL);
         void getInfo(SDL_Rect* buf);
         void setInfo(const SDL_Rect* info);
         void setPosition(int x, int y);

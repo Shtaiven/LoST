@@ -56,30 +56,25 @@ bool Sprite::load(std::string file, SDL_Renderer* renderer, const SDL_Rect* info
 
 
 // Render the sprite
-int Sprite::render() {
-    //Apply the image
-    return SDL_RenderCopy(m_renderer, m_texture, NULL, &m_info);
+int Sprite::render(const SDL_Rect* clip) {
+    return SDL_RenderCopy(m_renderer, m_texture, clip, &m_info);
 }
 
 
 // Render the sprite to a specific location
-int Sprite::render(int x, int y) {
+int Sprite::render(int x, int y, const SDL_Rect* clip) {
     setPosition(x, y);
-    return render();
+    return render(clip);
 }
 
 
 void Sprite::getInfo(SDL_Rect* buf) {
-    if (buf) {
-        memcpy(buf, &m_info, sizeof(SDL_Rect));
-    }
+    if (buf) memcpy(buf, &m_info, sizeof(SDL_Rect));
 }
 
 
 void Sprite::setInfo(const SDL_Rect* info) {
-    if (info) {
-        memcpy(&m_info, info, sizeof(SDL_Rect));
-    }
+    if (info) memcpy(&m_info, info, sizeof(SDL_Rect));
 }
 
 
@@ -90,7 +85,7 @@ void Sprite::setPosition(int x, int y) {
 
 
 void Sprite::setPosition(const SDL_Rect* pos) {
-    setPosition(pos->x, pos->y);
+    if (pos) setPosition(pos->x, pos->y);
 }
 
 
@@ -101,7 +96,7 @@ void Sprite::setSize(int w, int h) {
 
 
 void Sprite::setSize(const SDL_Rect* size) {
-    setSize(size->w, size->h);
+    if (size) setSize(size->w, size->h);
 }
 
 

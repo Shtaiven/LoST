@@ -79,11 +79,11 @@ int Game::setup()
     // Create a character sprite
     m_player = Player();
     SDL_Rect player_info = {0};
-    player_info.w = 300;
-    player_info.h = 300;
+    player_info.w = 180;
+    player_info.h = 280;
     player_info.x = (m_width - player_info.w) / 2;
     player_info.y = m_height - player_info.h;
-    if (!m_player.load("../../assets/icon.png", m_renderer, &player_info)) return 1;
+    if (!m_player.load("../../assets/adventurer-spritesheet.png", m_renderer, &player_info)) return 1;
 
     // Update the surface
     update();
@@ -98,7 +98,13 @@ void Game::update()
     SDL_RenderClear(m_renderer);
 
     // Render the player to the screen
-    m_player.render();
+    SDL_Rect player_clip = {
+        14, // x
+        7,  // y
+        18, // w
+        28  // h
+    };
+    m_player.render(&player_clip);
 
     // Update the screen
     SDL_RenderPresent(m_renderer);
