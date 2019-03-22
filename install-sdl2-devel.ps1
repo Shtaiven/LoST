@@ -7,7 +7,7 @@ param (
 )
 
 # File and folder names
-$cache_path = "$($PSScriptRoot)\.setup-cache"
+$cache_path = "$($PSScriptRoot)\.install-cache"
 $unzip_path = "$($PSScriptRoot)\SDL2"
 
 # Remove files and exit if the argument was given
