@@ -98,12 +98,6 @@ void Game::update()
     SDL_RenderClear(m_renderer);
 
     // Render the player to the screen
-    SDL_Rect player_clip = {
-        14, // x
-        7,  // y
-        18, // w
-        28  // h
-    };
     m_player.render();
 
     // Update the screen

@@ -111,8 +111,8 @@ int AnimatedSprite::render(int x, int y) {
     return render();
 }
 
-void AnimatedSprite::addFrames(const SDL_Rect* frame) {
-    m_frames.push_back(*frame);
+void AnimatedSprite::addFrames(const SDL_Rect& frame) {
+    m_frames.push_back(frame);
 }
 
 void AnimatedSprite::addFrames(const std::vector<SDL_Rect>& frames) {
@@ -141,7 +141,7 @@ size_t AnimatedSprite::getCurrentFrameIndex() {
 }
 
 void AnimatedSprite::setCurrentFrameIndex(size_t index) {
-
+    m_current_frame_index = index;
 }
 
 size_t AnimatedSprite::getStartFrameIndex() {
@@ -149,7 +149,7 @@ size_t AnimatedSprite::getStartFrameIndex() {
 }
 
 void AnimatedSprite::setStartFrameIndex(size_t index) {
-
+    m_start_frame_index = index;
 }
 
 size_t AnimatedSprite::getEndFrameIndex() {
@@ -157,37 +157,17 @@ size_t AnimatedSprite::getEndFrameIndex() {
 }
 
 void AnimatedSprite::setEndFrameIndex(size_t index) {
-
+    m_end_frame_index = index;
 }
 
 
 /* EventSprite class methods ************************************************/
-void addEventHandler(const SDL_EventType& event_type, const std::function<void()>& handler) {
+// TODO: Add event handling
+void addEventHandler(SDL_EventType event_type, void (*handler)(const SDL_Event&)) {
 
 }
 
 // Handle incoming events
 void EventSprite::handleEvent(const SDL_Event& e) {
-    if (noLoad("handleEvent")) return;
 
-    // Handle keyboard events
-    if (e.type == SDL_KEYDOWN) {
-        int max_w, max_h;
-        SDL_GetRendererOutputSize(m_renderer, &max_w, &max_h);
-
-        if (e.key.keysym.sym == SDLK_LEFT) {
-            m_info.x -= 10;
-            if (m_info.x < 0) {
-                m_info.x = 0;
-            }
-        }
-
-        if (e.key.keysym.sym == SDLK_RIGHT) {
-            m_info.x += 10;
-            if (m_info.x > max_w - m_info.w) {
-                m_info.x = max_w - m_info.w;
-            }
-
-        }
-    }
 }

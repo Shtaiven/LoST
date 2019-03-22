@@ -5,11 +5,24 @@
 
 class LoST_Player : public AnimatedSprite, public EventSprite {
     private:
-        void keyEventHandler();
         void moveLeft();
         void moveRight();
         void jump();
-        void duck();
+        void crouch();
+
+    public:
+    // FIXME: This doesn't compile. Investigate
+        void keyEventHandler(const SDL_Event& e);
+        LoST_Player() {
+            SDL_Rect player_clip = {
+                14, // x
+                7,  // y
+                18, // w
+                28  // h
+            };
+            addFrames(player_clip);
+            addEventHandler(SDL_KEYDOWN, keyEventHandler);
+        }
 };
 
 #endif // LOST_PLAYER_HPP__

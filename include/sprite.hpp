@@ -41,7 +41,7 @@ class AnimatedSprite : virtual public Sprite {
         int render(int x, int y);
 
         // Frame manipulation
-        void addFrames(const SDL_Rect* frame);
+        void addFrames(const SDL_Rect& frame);
         void addFrames(const std::vector<SDL_Rect>& frames);
         void delFrames();
         void delFrames(size_t n);
@@ -58,20 +58,20 @@ class AnimatedSprite : virtual public Sprite {
 
     private:
         std::vector<SDL_Rect> m_frames;
-        int m_current_frame_index = 0;
-        int m_start_frame_index = 0;
-        int m_end_frame_index = 0;
+        size_t m_current_frame_index = 0;
+        size_t m_start_frame_index = 0;
+        size_t m_end_frame_index = 0;
 };
 
 
 // EventSprite class that adds event handling to Sprite
 class EventSprite : virtual public Sprite {
     public:
-        void addEventHandler(const SDL_EventType& event_type, const std::function<void()>& handler);
+        void addEventHandler(SDL_EventType event_type, void (*handler)(const SDL_Event&));
         void handleEvent(const SDL_Event& e);
 
     private:
-        std::map<SDL_EventType, std::function<void()>> m_event_handlers;
+        std::map<SDL_EventType, std::function<void(const SDL_Event&)>> m_event_handlers;
 };
 
 
