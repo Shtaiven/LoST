@@ -3,7 +3,7 @@
 
 #include "SDL.h"
 #include <string>
-#include "sprite.hpp"
+#include "LoST_Player.hpp"
 
 
 // Game class creates SDL game window and listens to events
@@ -25,7 +25,7 @@ class Game {
         int m_width;
         int m_height;
         std::string m_title;
-        Player m_player;
+        LoST_Player m_player;
 };
 
 

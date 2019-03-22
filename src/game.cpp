@@ -77,7 +77,7 @@ int Game::setup()
     std::cout << "Created renderer" << std::endl;
 
     // Create a character sprite
-    m_player = Player();
+    m_player = LoST_Player();
     SDL_Rect player_info = {0};
     player_info.w = 180;
     player_info.h = 280;
@@ -104,7 +104,7 @@ void Game::update()
         18, // w
         28  // h
     };
-    m_player.render(&player_clip);
+    m_player.render();
 
     // Update the screen
     SDL_RenderPresent(m_renderer);

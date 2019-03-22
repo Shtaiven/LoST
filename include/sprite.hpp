@@ -3,13 +3,15 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
+#include <map>
+#include <functional>
 #include "SDL.h"
 
 
 // Sprite class manages sprites (character, enemies, etc)
 class Sprite {
     public:
-        Sprite();
         ~Sprite();
         void free();
         bool load(std::string file, SDL_Renderer* renderer, const SDL_Rect* info=NULL);
@@ -21,7 +23,6 @@ class Sprite {
         void setPosition(const SDL_Rect* pos);
         void setSize(int w, int h);
         void setSize(const SDL_Rect* size);
-        virtual void handleEvent(const SDL_Event& e) {}
 
     protected:
         std::string m_file = "";
@@ -32,10 +33,45 @@ class Sprite {
 };
 
 
-// Player class that adds event handling to sprite
-class Player : public Sprite {
+// AnimatedSprite class allows adding animations through the use of a spritesheet
+class AnimatedSprite : virtual public Sprite {
     public:
+        // Redefined from Sprite
+        int render();
+        int render(int x, int y);
+
+        // Frame manipulation
+        void addFrames(const SDL_Rect* frame);
+        void addFrames(const std::vector<SDL_Rect>& frames);
+        void delFrames();
+        void delFrames(size_t n);
+        size_t numFrames();
+        void getFrame(size_t index, SDL_Rect* buf);
+
+        // Index manipulation
+        size_t getCurrentFrameIndex();
+        void setCurrentFrameIndex(size_t index);
+        size_t getStartFrameIndex();
+        void setStartFrameIndex(size_t index);
+        size_t getEndFrameIndex();
+        void setEndFrameIndex(size_t index);
+
+    private:
+        std::vector<SDL_Rect> m_frames;
+        int m_current_frame_index = 0;
+        int m_start_frame_index = 0;
+        int m_end_frame_index = 0;
+};
+
+
+// EventSprite class that adds event handling to Sprite
+class EventSprite : virtual public Sprite {
+    public:
+        void addEventHandler(const SDL_EventType& event_type, const std::function<void()>& handler);
         void handleEvent(const SDL_Event& e);
+
+    private:
+        std::map<SDL_EventType, std::function<void()>> m_event_handlers;
 };
 
 
