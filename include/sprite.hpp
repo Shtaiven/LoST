@@ -9,20 +9,26 @@
 #include "SDL.h"
 
 
+#define ASSIGN_SDL_RECT(_rect, _x, _y, _w, _h) do { \
+    (_rect).x=_x; (_rect).y=_y; (_rect).w=_w; (rect.h)=_h; \
+} while(0)
+
+
 // Sprite class manages sprites (character, enemies, etc)
 class Sprite {
     public:
         ~Sprite();
         void free();
         bool load(std::string file, SDL_Renderer* renderer, const SDL_Rect* info=NULL);
-        int render(const SDL_Rect* clip=NULL);
-        int render(int x, int y, const SDL_Rect* clip=NULL);
         void getInfo(SDL_Rect* buf);
         void setInfo(const SDL_Rect* info);
         void setPosition(int x, int y);
         void setPosition(const SDL_Rect* pos);
         void setSize(int w, int h);
         void setSize(const SDL_Rect* size);
+        virtual int render(const SDL_Rect* clip=NULL);
+        virtual int render(int x, int y, const SDL_Rect* clip=NULL);
+        virtual void handleEvent(const SDL_Event& e) {}
 
     protected:
         std::string m_file = "";
@@ -41,7 +47,8 @@ class AnimatedSprite : virtual public Sprite {
         int render(int x, int y);
 
         // Frame manipulation
-        void addFrames(const SDL_Rect& frame);
+        void addFrame(int x, int y, int w, int h);
+        void addFrame(const SDL_Rect& frame);
         void addFrames(const std::vector<SDL_Rect>& frames);
         void delFrames();
         void delFrames(size_t n);
@@ -61,17 +68,6 @@ class AnimatedSprite : virtual public Sprite {
         size_t m_current_frame_index = 0;
         size_t m_start_frame_index = 0;
         size_t m_end_frame_index = 0;
-};
-
-
-// EventSprite class that adds event handling to Sprite
-class EventSprite : virtual public Sprite {
-    public:
-        void addEventHandler(SDL_EventType event_type, void (*handler)(const SDL_Event&));
-        void handleEvent(const SDL_Event& e);
-
-    private:
-        std::map<SDL_EventType, std::function<void(const SDL_Event&)>> m_event_handlers;
 };
 
 

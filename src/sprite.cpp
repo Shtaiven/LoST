@@ -87,15 +87,7 @@ void Sprite::setSize(const SDL_Rect* size) {
 }
 
 bool Sprite::noLoad(std::string func_name) {
-    if (!m_texture) {
-        std::cerr << "Sprite wasn't loaded before function call";
-        if (func_name != "") {
-            std::cerr << " " << func_name;
-        }
-        std::cerr << "!" << std::endl;
-        return true;
-    }
-    return false;
+    return !m_texture;
 }
 
 
@@ -111,7 +103,12 @@ int AnimatedSprite::render(int x, int y) {
     return render();
 }
 
-void AnimatedSprite::addFrames(const SDL_Rect& frame) {
+void AnimatedSprite::addFrame(int x, int y, int w, int h) {
+    SDL_Rect frame = { x, y, w, h };
+    addFrame(frame);
+}
+
+void AnimatedSprite::addFrame(const SDL_Rect& frame) {
     m_frames.push_back(frame);
 }
 
@@ -158,16 +155,4 @@ size_t AnimatedSprite::getEndFrameIndex() {
 
 void AnimatedSprite::setEndFrameIndex(size_t index) {
     m_end_frame_index = index;
-}
-
-
-/* EventSprite class methods ************************************************/
-// TODO: Add event handling
-void addEventHandler(SDL_EventType event_type, void (*handler)(const SDL_Event&)) {
-
-}
-
-// Handle incoming events
-void EventSprite::handleEvent(const SDL_Event& e) {
-
 }

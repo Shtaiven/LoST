@@ -29,10 +29,6 @@ Game::Game(std::string title, int width, int height)
             m_inited = true;
         }
     }
-
-    // Clean up on exit
-    atexit(SDL_Quit);
-    atexit(IMG_Quit);
 }
 
 // Destructor
@@ -50,6 +46,10 @@ void Game::close()
     // Destroy renderer
     SDL_DestroyRenderer(m_renderer);
     m_renderer = NULL;
+
+    // Clean up on exit
+    IMG_Quit();
+    SDL_Quit();
 }
 
 int Game::setup()
@@ -77,7 +77,6 @@ int Game::setup()
     std::cout << "Created renderer" << std::endl;
 
     // Create a character sprite
-    m_player = LoST_Player();
     SDL_Rect player_info = {0};
     player_info.w = 180;
     player_info.h = 280;
