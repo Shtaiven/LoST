@@ -1,6 +1,5 @@
-#include "SDL_image.h"
 #include <iostream>
-#include <string>
+#include "SDL_image.h"
 #include "game.hpp"
 
 // Initialize the game with a window width and height, and a title

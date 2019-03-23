@@ -1,9 +1,9 @@
 #ifndef GAME_HPP__
 #define GAME_HPP__
 
-#include "SDL.h"
 #include <string>
-#include "LoST_Player.hpp"
+#include "SDL.h"
+#include "LoST.hpp"
 
 
 // Game class creates SDL game window and listens to events
