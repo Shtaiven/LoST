@@ -81,7 +81,7 @@ int Game::setup()
     player_info.h = 280;
     player_info.x = (m_width - player_info.w) / 2;
     player_info.y = m_height - player_info.h;
-    if (!m_player.load("../../assets/adventurer-spritesheet.png", m_renderer, &player_info)) return 1;
+    if (!m_player.load(LoST_ASSETS_PLAYER, m_renderer, &player_info)) return 1;
 
     // Update the surface
     update();

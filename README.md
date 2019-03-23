@@ -27,7 +27,7 @@ LoST is loosely based on a fictional video game described in the short story *Na
 
     ```PowerShell
     Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
-    .\install-sdl2-devel.ps1
+    .\install-libs.ps1
     ```
 
     then wait for the script to complete.
