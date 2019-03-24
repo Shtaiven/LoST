@@ -19,14 +19,21 @@ class Sprite {
     public:
         ~Sprite();
         void free();
-        bool load(std::string file, SDL_Renderer* renderer, const SDL_Rect* render_rect=NULL);
+        bool loadImage(std::string file, SDL_Renderer* renderer, const SDL_Rect* render_rect=NULL);
+        bool loadText(TTF_Font* font, SDL_Renderer* renderer, std::string text, const SDL_Color& color={0,0,0,0xFF}, const SDL_Point& pos={0,0});
         void getRenderRect(SDL_Rect* render_rect);
         void setRenderRect(const SDL_Rect* render_rect);
         void setCenter(SDL_Point* center);
+        int getX();
+        void setX(int x);
+        int getY();
+        void setY(int y);
         void setPosition(int x, int y);
-        void setPosition(const SDL_Rect* pos);
+        int getWidth();
+        void setWidth(int w);
+        int getHeight();
+        void setHeight(int h);
         void setSize(int w, int h);
-        void setSize(const SDL_Rect* size);
         void setColor(Uint8 red, Uint8 green, Uint8 blue);
         void setAlpha(Uint8 alpha);
         void setBlendMode(SDL_BlendMode blending);
@@ -34,11 +41,13 @@ class Sprite {
         void setFlip(Uint8 flip);
         double getRotation();
         void setRotation(double angle);
+        bool isLoaded();
         virtual int render(const SDL_Rect* clip=NULL);
         virtual int render(int x, int y, const SDL_Rect* clip=NULL);
         virtual void handleEvent(const SDL_Event& e) {}
 
     protected:
+        void loadTextureFromSurface(SDL_Surface* surface, SDL_Renderer* renderer, const SDL_Rect* render_rect);
         std::string m_file = "";
         SDL_Texture* m_texture = NULL;
         SDL_Renderer* m_renderer = NULL;
@@ -46,7 +55,6 @@ class Sprite {
         SDL_Point* m_center = NULL;
         Uint8 m_flip = SDL_FLIP_NONE;
         double m_rotation = 0.0;
-        bool noLoad(std::string func_name="");
 };
 
 

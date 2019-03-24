@@ -5,7 +5,7 @@
 // Initialize the game with a window width and height, and a title
 Game::Game(std::string title, int width, int height)
 {
-    m_inited = false;
+    m_inited = true;
     m_title = title;
     m_width = width;
     m_height = height;
@@ -14,6 +14,7 @@ Game::Game(std::string title, int width, int height)
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
     {
         std::cerr << "Couldn't initialize SDL: " << SDL_GetError() << std::endl;
+        m_inited = false;
     }
     else
     {
@@ -22,10 +23,13 @@ Game::Game(std::string title, int width, int height)
         if (!(IMG_Init(img_flags) & img_flags))
         {
             std::cerr << "Couldn't initialize SDL_image: " << IMG_GetError() << std::endl;
+            m_inited = false;
         }
-        else
-        {
-            m_inited = true;
+
+        // Initialize SDL_ttf
+        if(TTF_Init() == -1) {
+            std::cerr << "Couldn't initialize SDL_ttf: " << TTF_GetError() << std::endl;
+            m_inited = false;
         }
     }
 }
@@ -38,6 +42,10 @@ Game::~Game()
 
 void Game::close()
 {
+    // Free font
+    TTF_CloseFont(m_font);
+    m_font = NULL;
+
     // Destroy window
     SDL_DestroyWindow(m_window);
     m_window = NULL;
@@ -47,6 +55,7 @@ void Game::close()
     m_renderer = NULL;
 
     // Clean up on exit
+    TTF_Quit();
     IMG_Quit();
     SDL_Quit();
 }
@@ -75,14 +84,20 @@ int Game::setup()
     }
     std::cout << "Created renderer" << std::endl;
 
+    // Create a title
+    m_font = TTF_OpenFont(LoST_ASSETS_FONT_TITLE, 72);
+    SDL_Color title_color = { 0xFF, 0xFF, 0xFF, 0xFF };
+    if (!m_title_sprite.loadText(m_font, m_renderer, m_title.c_str(), title_color)) return 1;
+    m_title_sprite.setPosition((m_width - m_title_sprite.getWidth())/2, m_height*0.1);
+
     // Create a character sprite
-    SDL_Rect player_info = {0};
+    SDL_Rect player_rect = {0};
     int player_scale = 5;
-    player_info.w = LoST_ASSETS_PLAYER_FRAME_WIDTH*player_scale;
-    player_info.h = LoST_ASSETS_PLAYER_FRAME_HEIGHT*player_scale;
-    player_info.x = (m_width - player_info.w) / 2;
-    player_info.y = m_height - player_info.h;
-    if (!m_player.load(LoST_ASSETS_PLAYER, m_renderer, &player_info)) return 1;
+    player_rect.w = LoST_ASSETS_PLAYER_FRAME_WIDTH*player_scale;
+    player_rect.h = LoST_ASSETS_PLAYER_FRAME_HEIGHT*player_scale;
+    player_rect.x = (m_width - player_rect.w) / 2;
+    player_rect.y = m_height - player_rect.h;
+    if (!m_player_sprite.loadImage(LoST_ASSETS_PLAYER, m_renderer, &player_rect)) return 1;
 
     // Update the surface
     update();
@@ -96,8 +111,11 @@ void Game::update()
     SDL_SetRenderDrawColor(m_renderer, 0x00, 0x00, 0x00, 0xFF);
     SDL_RenderClear(m_renderer);
 
+    // Render title to the screen
+    m_title_sprite.render();
+
     // Render the player to the screen
-    m_player.render();
+    m_player_sprite.render();
 
     // Update the screen
     SDL_RenderPresent(m_renderer);
@@ -129,7 +147,7 @@ int Game::loop()
             else
             {
                 // Handle player keyboard events
-                m_player.handleEvent(e);
+                m_player_sprite.handleEvent(e);
             }
         }
 

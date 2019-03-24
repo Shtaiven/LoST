@@ -1,5 +1,6 @@
 #include <algorithm>
 #include "SDL_image.h"
+#include "SDL_ttf.h"
 #include "sprite.hpp"
 
 /* Sprite class methods *****************************************************/
@@ -16,10 +17,24 @@ void Sprite::free() {
     }
 }
 
-bool Sprite::load(std::string file, SDL_Renderer* renderer, const SDL_Rect* render_rect) {
+void Sprite::loadTextureFromSurface(SDL_Surface* surface, SDL_Renderer* renderer, const SDL_Rect* render_rect) {
     // Remove previous texture
     free();
 
+    // Optimize image performance
+    m_texture = SDL_CreateTextureFromSurface(renderer, surface);
+    if (!m_texture) {
+        std::cerr << "Unable to create texture! SDL Error: "
+                  << SDL_GetError()
+                  << std::endl;
+    }
+
+    // Save info for later use during rendering
+    if (render_rect) setRenderRect(render_rect);
+    m_renderer = renderer;
+}
+
+bool Sprite::loadImage(std::string file, SDL_Renderer* renderer, const SDL_Rect* render_rect) {
     // Load the sprite image
     SDL_Surface *temp_surface = IMG_Load(file.c_str());
     if (!temp_surface) {
@@ -29,26 +44,33 @@ bool Sprite::load(std::string file, SDL_Renderer* renderer, const SDL_Rect* rend
                   << IMG_GetError()
                   << std::endl;
     }
-
-    // Optimize image performance
-    m_texture = SDL_CreateTextureFromSurface(renderer, temp_surface);
-    if (!m_texture) {
-        std::cerr << "Unable to create texture from "
-                  << file
-                  << "! SDL Error: "
-                  << SDL_GetError()
-                  << std::endl;
-    }
+    loadTextureFromSurface(temp_surface, renderer, render_rect);
 
     // Free memory of temp_surface
     SDL_FreeSurface(temp_surface);
 
-    // Save info for later use during rendering
-    if (render_rect) setRenderRect(render_rect);
-    m_renderer = renderer;
-
-    return (bool) m_texture;
+    return isLoaded();
 }
+
+bool Sprite::loadText(TTF_Font* font, SDL_Renderer* renderer, std::string text, const SDL_Color& color, const SDL_Point& pos) {
+    // Load the text
+    SDL_Surface *temp_surface = NULL;
+    if (font) temp_surface = TTF_RenderText_Solid(font, text.c_str(), color);
+    if (!temp_surface) {
+        std::cerr << "Unable to load font! SDL_ttf Error: "
+                  << TTF_GetError()
+                  << std::endl;
+    }
+
+    SDL_Rect render_rect = {0};
+    if (temp_surface) ASSIGN_SDL_RECT(render_rect, pos.x, pos.y, temp_surface->w, temp_surface->h);
+    loadTextureFromSurface(temp_surface, renderer, &render_rect);
+
+    // Free memory of temp_surface
+    SDL_FreeSurface(temp_surface);
+
+    return isLoaded();
+}        
 
 // Render the sprite
 int Sprite::render(const SDL_Rect* clip) {
@@ -73,22 +95,44 @@ void Sprite::setCenter(SDL_Point* center) {
     m_center = center;
 }
 
-void Sprite::setPosition(int x, int y) {
+int Sprite::getX() {
+    return m_render_rect.x;
+}
+
+void Sprite::setX(int x) {
     m_render_rect.x = x;
+}
+
+int Sprite::getY() {
+    return m_render_rect.y;
+}
+
+void Sprite::setY(int y) {
     m_render_rect.y = y;
 }
 
-void Sprite::setPosition(const SDL_Rect* pos) {
-    if (pos) setPosition(pos->x, pos->y);
+void Sprite::setPosition(int x, int y) {
+    setX(x); setY(y);
 }
 
-void Sprite::setSize(int w, int h) {
+int Sprite::getWidth() {
+    return m_render_rect.w;
+}
+
+void Sprite::setWidth(int w) {
     m_render_rect.w = w;
+}
+
+int Sprite::getHeight() {
+    return m_render_rect.h;
+}
+
+void Sprite::setHeight(int h) {
     m_render_rect.h = h;
 }
 
-void Sprite::setSize(const SDL_Rect* size) {
-    if (size) setSize(size->w, size->h);
+void Sprite::setSize(int w, int h) {
+    setWidth(w); setHeight(h);
 }
 
 void Sprite::setColor(Uint8 red, Uint8 green, Uint8 blue) {
@@ -122,8 +166,8 @@ void Sprite::setRotation(double angle) {
     m_rotation = angle;
 }
 
-bool Sprite::noLoad(std::string func_name) {
-    return !m_texture;
+bool Sprite::isLoaded() {
+    return !!m_texture;
 }
 
 

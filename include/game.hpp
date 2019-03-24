@@ -3,6 +3,8 @@
 
 #include <string>
 #include "SDL.h"
+#include "SDL_ttf.h"
+#include "sprite.hpp"
 #include "LoST.hpp"
 
 
@@ -24,7 +26,9 @@ class Game {
         int m_width;
         int m_height;
         std::string m_title;
-        LoST_Player m_player;
+        TTF_Font* m_font = NULL;
+        Sprite m_title_sprite;
+        LoST_Player m_player_sprite;
 };
 
 

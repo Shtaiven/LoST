@@ -34,7 +34,7 @@ class LoST_Player : public AnimatedSprite {
     }
 
     void handleEvent(const SDL_Event& e) {
-        if (noLoad()) return;
+        if (!isLoaded()) return;
 
         // Handle keyboard events
         if (e.type == SDL_KEYDOWN) {
