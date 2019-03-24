@@ -17,7 +17,7 @@
 // Sprite class manages sprites (character, enemies, etc)
 class Sprite {
     public:
-        ~Sprite();
+        virtual ~Sprite();
         void free();
         bool loadImage(std::string file, SDL_Renderer* renderer, const SDL_Rect* render_rect=NULL);
         bool loadText(TTF_Font* font, SDL_Renderer* renderer, std::string text, const SDL_Color& color={0,0,0,0xFF}, const SDL_Point& pos={0,0});
@@ -42,16 +42,18 @@ class Sprite {
         double getRotation();
         void setRotation(double angle);
         bool isLoaded();
-        virtual int render(const SDL_Rect* clip=NULL);
-        virtual int render(int x, int y, const SDL_Rect* clip=NULL);
+        void clip(SDL_Rect* clip);
+        virtual int render();
+        virtual int render(int x, int y);
         virtual void handleEvent(const SDL_Event& e) {}
 
     protected:
         void loadTextureFromSurface(SDL_Surface* surface, SDL_Renderer* renderer, const SDL_Rect* render_rect);
-        std::string m_file = "";
+        std::string m_file;
         SDL_Texture* m_texture = NULL;
         SDL_Renderer* m_renderer = NULL;
         SDL_Rect m_render_rect = {0};
+        SDL_Rect* m_clip = NULL;
         SDL_Point* m_center = NULL;
         Uint8 m_flip = SDL_FLIP_NONE;
         double m_rotation = 0.0;
@@ -61,6 +63,8 @@ class Sprite {
 // AnimatedSprite class allows adding animations through the use of a spritesheet
 class AnimatedSprite : virtual public Sprite {
     public:
+        virtual ~AnimatedSprite();
+
         // Redefined from Sprite
         int render();
         int render(int x, int y);

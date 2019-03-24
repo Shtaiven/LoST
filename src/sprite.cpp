@@ -73,14 +73,14 @@ bool Sprite::loadText(TTF_Font* font, SDL_Renderer* renderer, std::string text, 
 }        
 
 // Render the sprite
-int Sprite::render(const SDL_Rect* clip) {
-    return SDL_RenderCopyEx(m_renderer, m_texture, clip, &m_render_rect, m_rotation, m_center, (SDL_RendererFlip) m_flip);
+int Sprite::render() {
+    return SDL_RenderCopyEx(m_renderer, m_texture, m_clip, &m_render_rect, m_rotation, m_center, (SDL_RendererFlip) m_flip);
 }
 
 // Render the sprite to a specific location
-int Sprite::render(int x, int y, const SDL_Rect* clip) {
+int Sprite::render(int x, int y) {
     setPosition(x, y);
-    return render(clip);
+    return render();
 }
 
 void Sprite::getRenderRect(SDL_Rect* render_rect) {
@@ -166,12 +166,20 @@ void Sprite::setRotation(double angle) {
     m_rotation = angle;
 }
 
+void Sprite::clip(SDL_Rect* clip_rect) {
+    m_clip = clip_rect;
+}
+
 bool Sprite::isLoaded() {
     return !!m_texture;
 }
 
 
 /* AnimatedSprite class methods *********************************************/
+AnimatedSprite::~AnimatedSprite() {
+    m_frames.clear();
+}
+
 void AnimatedSprite::updateAnimationLen() {
     m_animation_len = 0;
     if (m_start_frame_index < m_end_frame_index) {
@@ -199,7 +207,8 @@ size_t AnimatedSprite::nextFrameIndex() {
 
 int AnimatedSprite::render() {
     if (m_current_frame_index >= numFrames()) return -1;
-    int result = Sprite::render(&m_frames[m_current_frame_index]);
+    clip(&m_frames[m_current_frame_index]);
+    int result = Sprite::render();
     if (m_frame_delay >= 0) {
         m_current_frame_index = nextFrameIndex();
     }

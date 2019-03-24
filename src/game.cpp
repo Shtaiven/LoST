@@ -42,6 +42,12 @@ Game::~Game()
 
 void Game::close()
 {
+    // Free textures
+    for (int i = m_sprite_list.size()-1; i >= 0; --i) {
+        delete m_sprite_list[i];
+    }
+    m_sprite_list.clear();
+
     // Free font
     TTF_CloseFont(m_font);
     m_font = NULL;
@@ -85,21 +91,27 @@ int Game::setup()
     std::cout << "Created renderer" << std::endl;
 
     // Create a title
+    Sprite* title_sprite = new Sprite();
     m_font = TTF_OpenFont(LoST_ASSETS_FONT_TITLE, LoST_ASSETS_FONT_TITLE_POINT);
     SDL_Color title_color = { 0xFF, 0xFF, 0xFF, 0xFF };
-    if (!m_title_sprite.loadText(m_font, m_renderer, m_title.c_str(), title_color)) return 1;
+    if (!title_sprite->loadText(m_font, m_renderer, m_title.c_str(), title_color)) return 1;
     double title_scale = m_height*0.001;
-    m_title_sprite.setSize(m_title_sprite.getWidth()*title_scale, m_title_sprite.getHeight()*title_scale);
-    m_title_sprite.setPosition((m_width - m_title_sprite.getWidth())/2, m_height*0.1);
+    title_sprite->setSize(title_sprite->getWidth()*title_scale, title_sprite->getHeight()*title_scale);
+    title_sprite->setPosition((m_width - title_sprite->getWidth())/2, m_height*0.1);
 
     // Create a character sprite
+    LoST_Player* player_sprite = new LoST_Player();
     SDL_Rect player_rect = {0};
     int player_scale = m_height*0.0075;
     player_rect.w = LoST_ASSETS_PLAYER_FRAME_WIDTH*player_scale;
     player_rect.h = LoST_ASSETS_PLAYER_FRAME_HEIGHT*player_scale;
     player_rect.x = (m_width - player_rect.w) / 2;
     player_rect.y = m_height - player_rect.h;
-    if (!m_player_sprite.loadImage(LoST_ASSETS_PLAYER, m_renderer, &player_rect)) return 1;
+    if (!player_sprite->loadImage(LoST_ASSETS_PLAYER, m_renderer, &player_rect)) return 1;
+
+    // Add sprites to sprite list
+    m_sprite_list.push_back(title_sprite);
+    m_sprite_list.push_back(player_sprite);
 
     // Update the surface
     update();
@@ -113,11 +125,10 @@ void Game::update()
     SDL_SetRenderDrawColor(m_renderer, 0x00, 0x00, 0x00, 0xFF);
     SDL_RenderClear(m_renderer);
 
-    // Render title to the screen
-    m_title_sprite.render();
-
-    // Render the player to the screen
-    m_player_sprite.render();
+    // Render all sprites to the screen
+    for (int i = 0; i < m_sprite_list.size(); ++i) {
+        m_sprite_list[i]->render();
+    }
 
     // Update the screen
     SDL_RenderPresent(m_renderer);
@@ -148,8 +159,10 @@ int Game::loop()
             }
             else
             {
-                // Handle player keyboard events
-                m_player_sprite.handleEvent(e);
+                // Handle player events
+                for (int i = 0; i < m_sprite_list.size(); ++i) {
+                    m_sprite_list[i]->handleEvent(e);
+                }
             }
         }
 

@@ -2,6 +2,7 @@
 #define GAME_HPP__
 
 #include <string>
+#include <vector>
 #include "SDL.h"
 #include "SDL_ttf.h"
 #include "sprite.hpp"
@@ -27,8 +28,7 @@ class Game {
         int m_height;
         std::string m_title;
         TTF_Font* m_font = NULL;
-        Sprite m_title_sprite;
-        LoST_Player m_player_sprite;
+        std::vector<Sprite*> m_sprite_list;
 };
 
 
