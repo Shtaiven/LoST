@@ -30,6 +30,7 @@ class LoST_Player : public AnimatedSprite {
         addFrame(LoST_ASSETS_PLAYER_JUMP_FRAME5);
         addFrame(LoST_ASSETS_PLAYER_JUMP_FRAME6);
         addFrame(LoST_ASSETS_PLAYER_JUMP_FRAME7);
+        setSpeed(1.0/120);
         idle();
     }
 
@@ -48,21 +49,16 @@ class LoST_Player : public AnimatedSprite {
                     break;
 
                 case SDLK_UP:
-                    jump();
+                    jump(m_prev_keydown != SDLK_UP);
                     break;
 
                 case SDLK_DOWN:
-                    crouch();
+                    crouch(m_prev_keydown != SDLK_DOWN);
                     break;
             }
             m_prev_keydown = e.key.keysym.sym;
         } else if (e.type == SDL_KEYUP) {
-            switch (e.key.keysym.sym) {
-                case SDLK_LEFT:
-                case SDLK_RIGHT:
-                    idle();
-                    break;
-            }
+            idle();
             m_prev_keydown = SDLK_UNKNOWN;
         }
     }
@@ -73,10 +69,7 @@ class LoST_Player : public AnimatedSprite {
 
     void moveLeft(bool update_anim=false) {
         if (update_anim)  {
-            setStartFrameIndex(LoST_ASSETS_PLAYER_RUN_START_INDEX);
-            setEndFrameIndex(LoST_ASSETS_PLAYER_RUN_END_INDEX);
-            loop(LoST_ASSETS_PLAYER_RUN_LOOPS);
-            setSpeed(1.0/40);
+            LoST_SET_ANIMATION(RUN);
             setFlip(SDL_FLIP_HORIZONTAL);
         }
 
@@ -88,10 +81,7 @@ class LoST_Player : public AnimatedSprite {
 
     void moveRight(bool update_anim=false) {
         if (update_anim)  {
-            setStartFrameIndex(LoST_ASSETS_PLAYER_RUN_START_INDEX);
-            setEndFrameIndex(LoST_ASSETS_PLAYER_RUN_END_INDEX);
-            loop(LoST_ASSETS_PLAYER_RUN_LOOPS);
-            setSpeed(1.0/40);
+            LoST_SET_ANIMATION(RUN);
             setFlip(SDL_FLIP_NONE);
         }
 
@@ -104,40 +94,22 @@ class LoST_Player : public AnimatedSprite {
         }
     }
 
-    void jump() {
-        // int temp_delay = getFrameDelay();
-
-        // // if it is paused, unpause
-        // if (temp_delay < 0) temp_delay = 180;
-        // temp_delay -= 10;
-
-        // // if it at fastest, make sure not too pause
-        // if (temp_delay < 0) temp_delay = 0;
-
-        // setFrameDelay(temp_delay);
+    void jump(bool update_anim=false) {
+        if (update_anim) {
+            LoST_SET_ANIMATION(JUMP);
+        }
     }
 
-    void crouch() {
-        // int pause_delay = 180;
-        // int temp_delay = getFrameDelay();
-
-        // // If not paused, increase delay
-        // if (temp_delay >= 0) {
-        //     temp_delay += 10;
-
-        //     // check if pause has been reached
-        //     if (temp_delay >= pause_delay) {
-        //         temp_delay = -1;
-        //     }
-        // }
-        // setFrameDelay(temp_delay);
+    void crouch(bool update_anim=false) {
+        if (update_anim) {
+            LoST_SET_ANIMATION(CROUCH);
+        }
     }
 
     void idle() {
         setStartFrameIndex(LoST_ASSETS_PLAYER_IDLE_START_INDEX);
         setEndFrameIndex(LoST_ASSETS_PLAYER_IDLE_END_INDEX);
         loop(LoST_ASSETS_PLAYER_IDLE_LOOPS);
-        setSpeed(1.0/60);
     }
 };
 

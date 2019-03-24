@@ -2,7 +2,7 @@
 #define LOST_ASSETS_HPP__
 
 #include "SDL.h"
-
+#include "sprite.hpp"
 
 // Define directories
 #ifdef _WIN32
@@ -20,6 +20,14 @@
 #define LoST_ASSETS_FONT_TITLE_POINT 128
 #define LoST_ASSETS_FONT_GAME LoST_ASSETS_FONT_TITLE
 #define LoST_ASSETS_FONT_GAME_POINT 24
+
+// Define a macro for easy animation setting within an AnimatedSprite
+#define LoST_SET_ANIMATION(_anim) do { \
+    setStartFrameIndex(LoST_ASSETS_PLAYER_ ## _anim ## _START_INDEX); \
+    setEndFrameIndex(LoST_ASSETS_PLAYER_ ## _anim ## _END_INDEX); \
+    setCurrentFrameIndex(LoST_ASSETS_PLAYER_ ## _anim ## _START_INDEX); \
+    loop(LoST_ASSETS_PLAYER_ ## _anim ## _LOOPS); \
+} while(0)
 
 // Define player
 #define LoST_ASSETS_PLAYER LoST_ASSETS_DIR "adventurer-spritesheet.png"
