@@ -9,8 +9,8 @@ const int   SOFTWARE_VERSION_MINOR = 1;
 const int   SOFTWARE_VERSION_PATCH = 0;
 
 // Screen dimension constants
-const int SCREEN_WIDTH = 1280;
-const int SCREEN_HEIGHT = 720;
+const int SCREEN_WIDTH = 640;
+const int SCREEN_HEIGHT = 480;
 
 
 // Entry point for the game

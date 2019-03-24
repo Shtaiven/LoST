@@ -15,8 +15,11 @@
 // Define icon
 #define LoST_ASSETS_ICON LoST_ASSETS_DIR "icon.png"
 
+// Define fonts
 #define LoST_ASSETS_FONT_TITLE LoST_ASSETS_DIR "De-Valencia.ttf"
-#define LoST_ASSETS_FONT_GAME LoST_ASSETS_DIR "game.ttf"
+#define LoST_ASSETS_FONT_TITLE_POINT 128
+#define LoST_ASSETS_FONT_GAME LoST_ASSETS_FONT_TITLE
+#define LoST_ASSETS_FONT_GAME_POINT 24
 
 // Define player
 #define LoST_ASSETS_PLAYER LoST_ASSETS_DIR "adventurer-spritesheet.png"

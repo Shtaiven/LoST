@@ -85,14 +85,16 @@ int Game::setup()
     std::cout << "Created renderer" << std::endl;
 
     // Create a title
-    m_font = TTF_OpenFont(LoST_ASSETS_FONT_TITLE, 128);
+    m_font = TTF_OpenFont(LoST_ASSETS_FONT_TITLE, LoST_ASSETS_FONT_TITLE_POINT);
     SDL_Color title_color = { 0xFF, 0xFF, 0xFF, 0xFF };
     if (!m_title_sprite.loadText(m_font, m_renderer, m_title.c_str(), title_color)) return 1;
+    double title_scale = m_height*0.001;
+    m_title_sprite.setSize(m_title_sprite.getWidth()*title_scale, m_title_sprite.getHeight()*title_scale);
     m_title_sprite.setPosition((m_width - m_title_sprite.getWidth())/2, m_height*0.1);
 
     // Create a character sprite
     SDL_Rect player_rect = {0};
-    int player_scale = 5;
+    int player_scale = m_height*0.0075;
     player_rect.w = LoST_ASSETS_PLAYER_FRAME_WIDTH*player_scale;
     player_rect.h = LoST_ASSETS_PLAYER_FRAME_HEIGHT*player_scale;
     player_rect.x = (m_width - player_rect.w) / 2;
