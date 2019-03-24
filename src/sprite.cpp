@@ -107,7 +107,7 @@ size_t AnimatedSprite::nextFrameIndex() {
         ++m_frames_skipped %= m_frame_delay;
     }
 
-    if (m_animation_len && !m_frames_skipped && m_frame_delay >= 0) {
+    if (m_animation_len > 1 && !m_frames_skipped && m_frame_delay >= 0) {
         size_t next_frame_diff = m_current_frame_index - m_start_frame_index + 1;
 
         // If we haven't reached the end of the animation or we are looping, calculate the next frame
