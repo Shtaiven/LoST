@@ -7,7 +7,7 @@
 class LoST_Player : public AnimatedSprite {
     public:
     LoST_Player() {
-        ASSIGN_SDL_RECT(m_info, 0, 0, LoST_ASSETS_PLAYER_FRAME_WIDTH, LoST_ASSETS_PLAYER_FRAME_HEIGHT);
+        ASSIGN_SDL_RECT(m_render_rect, 0, 0, LoST_ASSETS_PLAYER_FRAME_WIDTH, LoST_ASSETS_PLAYER_FRAME_HEIGHT);
         addFrame(LoST_ASSETS_PLAYER_IDLE_FRAME0);
         addFrame(LoST_ASSETS_PLAYER_IDLE_FRAME1);
         addFrame(LoST_ASSETS_PLAYER_IDLE_FRAME2);
@@ -77,11 +77,12 @@ class LoST_Player : public AnimatedSprite {
             setEndFrameIndex(LoST_ASSETS_PLAYER_RUN_END_INDEX);
             loop(LoST_ASSETS_PLAYER_RUN_LOOPS);
             setSpeed(1.0/40);
+            setFlip(SDL_FLIP_HORIZONTAL);
         }
 
-        m_info.x -= m_speed;
-        if (m_info.x < 0) {
-            m_info.x = 0;
+        m_render_rect.x -= m_speed;
+        if (m_render_rect.x < 0) {
+            m_render_rect.x = 0;
         }
     }
 
@@ -91,14 +92,15 @@ class LoST_Player : public AnimatedSprite {
             setEndFrameIndex(LoST_ASSETS_PLAYER_RUN_END_INDEX);
             loop(LoST_ASSETS_PLAYER_RUN_LOOPS);
             setSpeed(1.0/40);
+            setFlip(SDL_FLIP_NONE);
         }
 
         int max_w, max_h;
         SDL_GetRendererOutputSize(m_renderer, &max_w, &max_h);
 
-        m_info.x += m_speed;
-        if (m_info.x > max_w - m_info.w) {
-            m_info.x = max_w - m_info.w;
+        m_render_rect.x += m_speed;
+        if (m_render_rect.x > max_w - m_render_rect.w) {
+            m_render_rect.x = max_w - m_render_rect.w;
         }
     }
 

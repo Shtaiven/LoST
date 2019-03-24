@@ -19,9 +19,10 @@ class Sprite {
     public:
         ~Sprite();
         void free();
-        bool load(std::string file, SDL_Renderer* renderer, const SDL_Rect* info=NULL);
-        void getInfo(SDL_Rect* buf);
-        void setInfo(const SDL_Rect* info);
+        bool load(std::string file, SDL_Renderer* renderer, const SDL_Rect* render_rect=NULL);
+        void getRenderRect(SDL_Rect* render_rect);
+        void setRenderRect(const SDL_Rect* render_rect);
+        void setCenter(SDL_Point* center);
         void setPosition(int x, int y);
         void setPosition(const SDL_Rect* pos);
         void setSize(int w, int h);
@@ -29,6 +30,10 @@ class Sprite {
         void setColor(Uint8 red, Uint8 green, Uint8 blue);
         void setAlpha(Uint8 alpha);
         void setBlendMode(SDL_BlendMode blending);
+        Uint8 getFlip();
+        void setFlip(Uint8 flip);
+        double getRotation();
+        void setRotation(double angle);
         virtual int render(const SDL_Rect* clip=NULL);
         virtual int render(int x, int y, const SDL_Rect* clip=NULL);
         virtual void handleEvent(const SDL_Event& e) {}
@@ -37,7 +42,10 @@ class Sprite {
         std::string m_file = "";
         SDL_Texture* m_texture = NULL;
         SDL_Renderer* m_renderer = NULL;
-        SDL_Rect m_info = {0};
+        SDL_Rect m_render_rect = {0};
+        SDL_Point* m_center = NULL;
+        Uint8 m_flip = SDL_FLIP_NONE;
+        double m_rotation = 0.0;
         bool noLoad(std::string func_name="");
 };
 
@@ -58,8 +66,8 @@ class AnimatedSprite : virtual public Sprite {
         size_t numFrames();
         void getFrame(size_t index, SDL_Rect* buf);
         void loop(bool loop);
-        float getSpeed();
-        void setSpeed(float speed=1.0);
+        double getSpeed();
+        void setSpeed(double speed=1.0);
         int getFrameDelay();
         void setFrameDelay(int delay=0);
 

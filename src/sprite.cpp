@@ -12,11 +12,11 @@ void Sprite::free() {
         // Deallocate the texture
         SDL_DestroyTexture(m_texture);
         m_texture = NULL;
-        memset(&m_info, 0, sizeof(m_info));
+        memset(&m_render_rect, 0, sizeof(m_render_rect));
     }
 }
 
-bool Sprite::load(std::string file, SDL_Renderer* renderer, const SDL_Rect* info) {
+bool Sprite::load(std::string file, SDL_Renderer* renderer, const SDL_Rect* render_rect) {
     // Remove previous texture
     free();
 
@@ -44,7 +44,7 @@ bool Sprite::load(std::string file, SDL_Renderer* renderer, const SDL_Rect* info
     SDL_FreeSurface(temp_surface);
 
     // Save info for later use during rendering
-    if (info) setInfo(info);
+    if (render_rect) setRenderRect(render_rect);
     m_renderer = renderer;
 
     return (bool) m_texture;
@@ -52,7 +52,7 @@ bool Sprite::load(std::string file, SDL_Renderer* renderer, const SDL_Rect* info
 
 // Render the sprite
 int Sprite::render(const SDL_Rect* clip) {
-    return SDL_RenderCopy(m_renderer, m_texture, clip, &m_info);
+    return SDL_RenderCopyEx(m_renderer, m_texture, clip, &m_render_rect, m_rotation, m_center, (SDL_RendererFlip) m_flip);
 }
 
 // Render the sprite to a specific location
@@ -61,17 +61,21 @@ int Sprite::render(int x, int y, const SDL_Rect* clip) {
     return render(clip);
 }
 
-void Sprite::getInfo(SDL_Rect* buf) {
-    if (buf) memcpy(buf, &m_info, sizeof(SDL_Rect));
+void Sprite::getRenderRect(SDL_Rect* render_rect) {
+    if (render_rect) memcpy(render_rect, &m_render_rect, sizeof(SDL_Rect));
 }
 
-void Sprite::setInfo(const SDL_Rect* info) {
-    if (info) memcpy(&m_info, info, sizeof(SDL_Rect));
+void Sprite::setRenderRect(const SDL_Rect* render_rect) {
+    if (render_rect) memcpy(&m_render_rect, render_rect, sizeof(SDL_Rect));
+}
+
+void Sprite::setCenter(SDL_Point* center) {
+    m_center = center;
 }
 
 void Sprite::setPosition(int x, int y) {
-    m_info.x = x;
-    m_info.y = y;
+    m_render_rect.x = x;
+    m_render_rect.y = y;
 }
 
 void Sprite::setPosition(const SDL_Rect* pos) {
@@ -79,8 +83,8 @@ void Sprite::setPosition(const SDL_Rect* pos) {
 }
 
 void Sprite::setSize(int w, int h) {
-    m_info.w = w;
-    m_info.h = h;
+    m_render_rect.w = w;
+    m_render_rect.h = h;
 }
 
 void Sprite::setSize(const SDL_Rect* size) {
@@ -100,6 +104,22 @@ void Sprite::setColor(Uint8 red, Uint8 green, Uint8 blue) {
 void Sprite::setBlendMode(SDL_BlendMode blending) {
     //Set blending function
     SDL_SetTextureBlendMode(m_texture, blending);
+}
+
+Uint8 Sprite::getFlip() {
+    return m_flip;
+}
+
+void Sprite::setFlip(Uint8 flip) {
+    m_flip = flip & (SDL_FLIP_HORIZONTAL | SDL_FLIP_VERTICAL);
+}
+
+double Sprite::getRotation() {
+    return m_rotation;
+}
+
+void Sprite::setRotation(double angle) {
+    m_rotation = angle;
 }
 
 bool Sprite::noLoad(std::string func_name) {
@@ -214,8 +234,8 @@ void AnimatedSprite::loop(bool loop) {
     m_loop = loop;
 }
 
-float AnimatedSprite::getSpeed() {
-    float speed = 0.0;
+double AnimatedSprite::getSpeed() {
+    double speed = 0.0;
     if (m_frame_delay >= 0) {
         speed = 1.0/(m_frame_delay+1);
     }
@@ -223,7 +243,7 @@ float AnimatedSprite::getSpeed() {
     return speed;
 }
 
-void AnimatedSprite::setSpeed(float speed) {
+void AnimatedSprite::setSpeed(double speed) {
     if (speed < 1.0 && speed > 0) {;
         setFrameDelay(1.0/speed-1);
     } else if (speed == 0.0) {
