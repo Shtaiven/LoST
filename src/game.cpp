@@ -85,7 +85,7 @@ int Game::setup()
     std::cout << "Created renderer" << std::endl;
 
     // Create a title
-    m_font = TTF_OpenFont(LoST_ASSETS_FONT_TITLE, 72);
+    m_font = TTF_OpenFont(LoST_ASSETS_FONT_TITLE, 128);
     SDL_Color title_color = { 0xFF, 0xFF, 0xFF, 0xFF };
     if (!m_title_sprite.loadText(m_font, m_renderer, m_title.c_str(), title_color)) return 1;
     m_title_sprite.setPosition((m_width - m_title_sprite.getWidth())/2, m_height*0.1);
