@@ -55,6 +55,8 @@ class AnimatedSprite : virtual public Sprite {
         size_t numFrames();
         void getFrame(size_t index, SDL_Rect* buf);
         void loop(bool loop);
+        void setSpeed(float speed=1.0);
+        void setFrameDelay(int delay=0);
 
         // Index manipulation
         size_t getCurrentFrameIndex();
@@ -71,6 +73,8 @@ class AnimatedSprite : virtual public Sprite {
         size_t m_end_frame_index = 0;
         size_t m_animation_len = 0;
         bool m_loop = false;
+        int m_frame_delay = 0;
+        int m_frames_skipped = 0;
         void updateAnimationLen();
         size_t nextFrameIndex();
 

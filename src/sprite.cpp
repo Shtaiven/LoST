@@ -95,24 +95,34 @@ bool Sprite::noLoad(std::string func_name) {
 void AnimatedSprite::updateAnimationLen() {
     m_animation_len = 0;
     if (m_start_frame_index < m_end_frame_index) {
-        m_animation_len = m_end_frame_index - m_start_frame_index;
+        m_animation_len = m_end_frame_index - m_start_frame_index + 1;
     }
 }
 
 size_t AnimatedSprite::nextFrameIndex() {
     size_t next_frame_index = m_current_frame_index;
-    if (m_animation_len) {
+
+    if (m_frame_delay >= 1) {
+        ++m_frames_skipped %= m_frame_delay;
+    }
+
+    if (m_animation_len && !m_frames_skipped && m_frame_delay >= 0) {
         size_t next_frame_diff = m_current_frame_index - m_start_frame_index + 1;
-        next_frame_index = next_frame_diff%m_animation_len + m_start_frame_index;
+
+        // If we haven't reached the end of the animation or we are looping, calculate the next frame
+        if ((m_animation_len - next_frame_diff) || m_loop) {
+            next_frame_index = next_frame_diff%m_animation_len + m_start_frame_index;
+        }
     }
     return next_frame_index;
 }
 
-// TODO: Take into account indices and increment on render
 int AnimatedSprite::render() {
     if (m_current_frame_index >= numFrames()) return -1;
-    int result = Sprite::render(&m_frames[m_current_frame_index++]);
-    m_current_frame_index = nextFrameIndex();
+    int result = Sprite::render(&m_frames[m_current_frame_index]);
+    if (m_frame_delay >= 0) {
+        m_current_frame_index = nextFrameIndex();
+    }
     return result;
 }
 
@@ -128,10 +138,12 @@ void AnimatedSprite::addFrame(int x, int y, int w, int h) {
 
 void AnimatedSprite::addFrame(const SDL_Rect& frame) {
     m_frames.push_back(frame);
+    m_animation_len = numFrames();
 }
 
 void AnimatedSprite::addFrames(const std::vector<SDL_Rect>& frames) {
     m_frames.insert(m_frames.end(), frames.begin(), frames.end());
+    m_animation_len = numFrames();
 }
 
 void AnimatedSprite::delFrames() {
@@ -141,6 +153,7 @@ void AnimatedSprite::delFrames() {
 void AnimatedSprite::delFrames(size_t n) {
     if (n > numFrames()) n = numFrames();
     m_frames.resize(numFrames()-n);
+    m_animation_len = numFrames();
 }
 
 size_t AnimatedSprite::numFrames() {
@@ -183,4 +196,19 @@ void AnimatedSprite::setEndFrameIndex(size_t index) {
 
 void AnimatedSprite::loop(bool loop) {
     m_loop = loop;
+}
+
+void AnimatedSprite::setSpeed(float speed) {
+    if (speed <= 1.0 && speed > 0) {
+        setFrameDelay(1.0/speed);
+    } else if (speed == 0.0) {
+        setFrameDelay(-1);
+    } else {
+        setFrameDelay(0);
+    }
+}
+
+void AnimatedSprite::setFrameDelay(int delay) {
+    m_frame_delay = delay;
+    m_frames_skipped = 0;
 }

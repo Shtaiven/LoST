@@ -30,7 +30,10 @@ class LoST_Player : public AnimatedSprite {
             addFrame(LoST_ASSETS_PLAYER_JUMP_FRAME5);
             addFrame(LoST_ASSETS_PLAYER_JUMP_FRAME6);
             addFrame(LoST_ASSETS_PLAYER_JUMP_FRAME7);
+            setStartFrameIndex(LoST_ASSETS_PLAYER_IDLE_START_INDEX);
             setEndFrameIndex(LoST_ASSETS_PLAYER_IDLE_END_INDEX);
+            loop(LoST_ASSETS_PLAYER_IDLE_LOOPS);
+            setFrameDelay(60);
         }
 
         void handleEvent(const SDL_Event& e) {

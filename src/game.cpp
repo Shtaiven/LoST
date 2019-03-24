@@ -77,8 +77,9 @@ int Game::setup()
 
     // Create a character sprite
     SDL_Rect player_info = {0};
-    player_info.w = 50;
-    player_info.h = 36;
+    int player_scale = 5;
+    player_info.w = LoST_ASSETS_PLAYER_FRAME_WIDTH*player_scale;
+    player_info.h = LoST_ASSETS_PLAYER_FRAME_HEIGHT*player_scale;
     player_info.x = (m_width - player_info.w) / 2;
     player_info.y = m_height - player_info.h;
     if (!m_player.load(LoST_ASSETS_PLAYER, m_renderer, &player_info)) return 1;
