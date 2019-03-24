@@ -1,3 +1,4 @@
+#include <algorithm>
 #include "SDL_image.h"
 #include "sprite.hpp"
 
@@ -198,9 +199,18 @@ void AnimatedSprite::loop(bool loop) {
     m_loop = loop;
 }
 
+float AnimatedSprite::getSpeed() {
+    float speed = 0.0;
+    if (m_frame_delay >= 0) {
+        speed = 1.0/(m_frame_delay+1);
+    }
+
+    return speed;
+}
+
 void AnimatedSprite::setSpeed(float speed) {
-    if (speed <= 1.0 && speed > 0) {
-        setFrameDelay(1.0/speed);
+    if (speed < 1.0 && speed > 0) {;
+        setFrameDelay(1.0/speed-1);
     } else if (speed == 0.0) {
         setFrameDelay(-1);
     } else {
@@ -208,7 +218,11 @@ void AnimatedSprite::setSpeed(float speed) {
     }
 }
 
+int AnimatedSprite::getFrameDelay() {
+    return m_frame_delay;
+}
+
 void AnimatedSprite::setFrameDelay(int delay) {
-    m_frame_delay = delay;
+    m_frame_delay = std::max(delay, -1);
     m_frames_skipped = 0;
 }

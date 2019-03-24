@@ -33,7 +33,7 @@ class LoST_Player : public AnimatedSprite {
             setStartFrameIndex(LoST_ASSETS_PLAYER_IDLE_START_INDEX);
             setEndFrameIndex(LoST_ASSETS_PLAYER_IDLE_END_INDEX);
             loop(LoST_ASSETS_PLAYER_IDLE_LOOPS);
-            setFrameDelay(60);
+            setSpeed(1.0/60);
         }
 
         void handleEvent(const SDL_Event& e) {
@@ -82,11 +82,32 @@ class LoST_Player : public AnimatedSprite {
         }
 
         void jump() {
+            int temp_delay = getFrameDelay();
 
+            // if it is paused, unpause
+            if (temp_delay < 0) temp_delay = 180;
+            temp_delay -= 10;
+
+            // if it at fastest, make sure not too pause
+            if (temp_delay < 0) temp_delay = 0;
+
+            setFrameDelay(temp_delay);
         }
 
         void crouch() {
+            int pause_delay = 180;
+            int temp_delay = getFrameDelay();
 
+            // If not paused, increase delay
+            if (temp_delay >= 0) {
+                temp_delay += 10;
+
+                // check if pause has been reached
+                if (temp_delay >= pause_delay) {
+                    temp_delay = -1;
+                }
+            }
+            setFrameDelay(temp_delay);
         }
 };
 
