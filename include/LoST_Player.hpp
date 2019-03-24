@@ -7,7 +7,30 @@
 class LoST_Player : public AnimatedSprite {
     public:
         LoST_Player() {
-            addFrame(14, 7, 18, 28);
+            ASSIGN_SDL_RECT(m_info, 0, 0, LoST_ASSETS_PLAYER_FRAME_WIDTH, LoST_ASSETS_PLAYER_FRAME_HEIGHT);
+            addFrame(LoST_ASSETS_PLAYER_IDLE_FRAME0);
+            addFrame(LoST_ASSETS_PLAYER_IDLE_FRAME1);
+            addFrame(LoST_ASSETS_PLAYER_IDLE_FRAME2);
+            addFrame(LoST_ASSETS_PLAYER_IDLE_FRAME3);
+            addFrame(LoST_ASSETS_PLAYER_RUN_FRAME0);
+            addFrame(LoST_ASSETS_PLAYER_RUN_FRAME1);
+            addFrame(LoST_ASSETS_PLAYER_RUN_FRAME2);
+            addFrame(LoST_ASSETS_PLAYER_RUN_FRAME3);
+            addFrame(LoST_ASSETS_PLAYER_RUN_FRAME4);
+            addFrame(LoST_ASSETS_PLAYER_RUN_FRAME5);
+            addFrame(LoST_ASSETS_PLAYER_CROUCH_FRAME0);
+            addFrame(LoST_ASSETS_PLAYER_CROUCH_FRAME1);
+            addFrame(LoST_ASSETS_PLAYER_CROUCH_FRAME2);
+            addFrame(LoST_ASSETS_PLAYER_CROUCH_FRAME3);
+            addFrame(LoST_ASSETS_PLAYER_JUMP_FRAME0);
+            addFrame(LoST_ASSETS_PLAYER_JUMP_FRAME1);
+            addFrame(LoST_ASSETS_PLAYER_JUMP_FRAME2);
+            addFrame(LoST_ASSETS_PLAYER_JUMP_FRAME3);
+            addFrame(LoST_ASSETS_PLAYER_JUMP_FRAME4);
+            addFrame(LoST_ASSETS_PLAYER_JUMP_FRAME5);
+            addFrame(LoST_ASSETS_PLAYER_JUMP_FRAME6);
+            addFrame(LoST_ASSETS_PLAYER_JUMP_FRAME7);
+            setEndFrameIndex(LoST_ASSETS_PLAYER_IDLE_END_INDEX);
         }
 
         void handleEvent(const SDL_Event& e) {

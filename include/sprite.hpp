@@ -10,7 +10,7 @@
 
 
 #define ASSIGN_SDL_RECT(_rect, _x, _y, _w, _h) do { \
-    (_rect).x=_x; (_rect).y=_y; (_rect).w=_w; (rect.h)=_h; \
+    (_rect).x=_x; (_rect).y=_y; (_rect).w=_w; (_rect.h)=_h; \
 } while(0)
 
 
@@ -54,6 +54,7 @@ class AnimatedSprite : virtual public Sprite {
         void delFrames(size_t n);
         size_t numFrames();
         void getFrame(size_t index, SDL_Rect* buf);
+        void loop(bool loop);
 
         // Index manipulation
         size_t getCurrentFrameIndex();
@@ -68,6 +69,11 @@ class AnimatedSprite : virtual public Sprite {
         size_t m_current_frame_index = 0;
         size_t m_start_frame_index = 0;
         size_t m_end_frame_index = 0;
+        size_t m_animation_len = 0;
+        bool m_loop = false;
+        void updateAnimationLen();
+        size_t nextFrameIndex();
+
 };
 
 

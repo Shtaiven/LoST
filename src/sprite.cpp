@@ -92,10 +92,28 @@ bool Sprite::noLoad(std::string func_name) {
 
 
 /* AnimatedSprite class methods *********************************************/
+void AnimatedSprite::updateAnimationLen() {
+    m_animation_len = 0;
+    if (m_start_frame_index < m_end_frame_index) {
+        m_animation_len = m_end_frame_index - m_start_frame_index;
+    }
+}
+
+size_t AnimatedSprite::nextFrameIndex() {
+    size_t next_frame_index = m_current_frame_index;
+    if (m_animation_len) {
+        size_t next_frame_diff = m_current_frame_index - m_start_frame_index + 1;
+        next_frame_index = next_frame_diff%m_animation_len + m_start_frame_index;
+    }
+    return next_frame_index;
+}
+
 // TODO: Take into account indices and increment on render
 int AnimatedSprite::render() {
-    if (m_current_frame_index >= m_frames.size()) return -1;
-    return Sprite::render(&m_frames[m_current_frame_index]);
+    if (m_current_frame_index >= numFrames()) return -1;
+    int result = Sprite::render(&m_frames[m_current_frame_index++]);
+    m_current_frame_index = nextFrameIndex();
+    return result;
 }
 
 int AnimatedSprite::render(int x, int y) {
@@ -117,12 +135,12 @@ void AnimatedSprite::addFrames(const std::vector<SDL_Rect>& frames) {
 }
 
 void AnimatedSprite::delFrames() {
-    delFrames(m_frames.size());
+    delFrames(numFrames());
 }
 
 void AnimatedSprite::delFrames(size_t n) {
-    if (n > m_frames.size()) n = m_frames.size();
-    m_frames.resize(m_frames.size()-n);
+    if (n > numFrames()) n = numFrames();
+    m_frames.resize(numFrames()-n);
 }
 
 size_t AnimatedSprite::numFrames() {
@@ -130,7 +148,7 @@ size_t AnimatedSprite::numFrames() {
 }
 
 void AnimatedSprite::getFrame(size_t index, SDL_Rect* buf) {
-    if (buf && index < m_frames.size()) memcpy(buf, &m_frames[index], sizeof(SDL_Rect));
+    if (buf && index < numFrames()) memcpy(buf, &m_frames[index], sizeof(SDL_Rect));
 }
 
 size_t AnimatedSprite::getCurrentFrameIndex() {
@@ -138,7 +156,11 @@ size_t AnimatedSprite::getCurrentFrameIndex() {
 }
 
 void AnimatedSprite::setCurrentFrameIndex(size_t index) {
-    m_current_frame_index = index;
+    if (index >= numFrames()) {
+        m_current_frame_index = numFrames();
+    } else {
+        m_current_frame_index = index;
+    }
 }
 
 size_t AnimatedSprite::getStartFrameIndex() {
@@ -147,6 +169,7 @@ size_t AnimatedSprite::getStartFrameIndex() {
 
 void AnimatedSprite::setStartFrameIndex(size_t index) {
     m_start_frame_index = index;
+    updateAnimationLen();
 }
 
 size_t AnimatedSprite::getEndFrameIndex() {
@@ -155,4 +178,9 @@ size_t AnimatedSprite::getEndFrameIndex() {
 
 void AnimatedSprite::setEndFrameIndex(size_t index) {
     m_end_frame_index = index;
+    updateAnimationLen();
+}
+
+void AnimatedSprite::loop(bool loop) {
+    m_loop = loop;
 }
