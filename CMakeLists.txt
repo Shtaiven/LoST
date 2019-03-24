@@ -9,9 +9,11 @@ set(SDL2_DIR "${CMAKE_SOURCE_DIR}/SDL2")
 
 find_package(SDL2 REQUIRED)
 find_package(SDL2_image REQUIRED)
+find_package(SDL2_ttf REQUIRED)
 
 include_directories("${SDL2_INCLUDE_DIRS}"
                     "${SDL2_IMAGE_INCLUDE_DIRS}"
+                    "${SDL2_TTF_INCLUDE_DIR}"
                     "${CMAKE_SOURCE_DIR}/include")
 
 file(GLOB_RECURSE SOURCES
@@ -23,7 +25,7 @@ file(GLOB_RECURSE SOURCES
     "${CMAKE_SOURCE_DIR}/src/*.c")
 
 add_executable(LoST ${SOURCES})
-target_link_libraries(LoST ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES})
+target_link_libraries(LoST ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES} ${SDL2_TTF_LIBRARY})
 
 if(WIN32)
     add_custom_command(TARGET LoST POST_BUILD          # Adds a post-build event to target

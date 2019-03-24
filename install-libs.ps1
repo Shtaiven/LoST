@@ -7,13 +7,18 @@ param (
 )
 
 # File and folder names
+<<<<<<< HEAD:install-sdl2-devel.ps1
 $cache_path = "$($PSScriptRoot)\.install-cache"
 $unzip_path = "$($PSScriptRoot)\SDL2"
+=======
+$cache_path = "$($PSScriptRoot)\.install-libs-cache"
+$unzip_path_sdl2 = "$($PSScriptRoot)\SDL2"
+>>>>>>> animations:install-libs.ps1
 
 # Remove files and exit if the argument was given
 if ($remove) {
-    Write-Host "Removing $($unzip_path)"
-    Remove-Item $unzip_path -Force -Recurse -ErrorAction SilentlyContinue
+    Write-Host "Removing $($unzip_path_sdl2)"
+    Remove-Item $unzip_path_sdl2 -Force -Recurse -ErrorAction SilentlyContinue
     Write-Host "Removing $($cache_path)"
     Remove-Item $cache_path -Force -Recurse -ErrorAction SilentlyContinue
     Write-Host "Done"
@@ -54,17 +59,17 @@ if ($download -eq 0) {
 
 # Unzip downloaded files
 if ($sdl2_files -And $sdl2_image_files) {
-    Remove-Item $unzip_path -Force -Recurse -ErrorAction SilentlyContinue
+    Remove-Item $unzip_path_sdl2 -Force -Recurse -ErrorAction SilentlyContinue
     Write-Host "Expanding $($sdl2_zip)"
-    Expand-Archive -Path "$($cache_path)\$($sdl2_zip)" -DestinationPath $unzip_path -Force
+    Expand-Archive -Path "$($cache_path)\$($sdl2_zip)" -DestinationPath $unzip_path_sdl2 -Force
     Write-Host "Expanding $($sdl2_image_zip)"
-    Expand-Archive -Path "$($cache_path)\$($sdl2_image_zip)" -DestinationPath $unzip_path -Force
+    Expand-Archive -Path "$($cache_path)\$($sdl2_image_zip)" -DestinationPath $unzip_path_sdl2 -Force
     Write-Host "Expanding $($sdl2_ttf_zip)"
-    Expand-Archive -Path "$($cache_path)\$($sdl2_ttf_zip)" -DestinationPath $unzip_path -Force
-    Write-Host "Consolidating files into $($unzip_path)"
-    $expanded = Get-ChildItem -Path $unzip_path -Filter "SDL2*" -ErrorAction SilentlyContinue -Force | ForEach-Object { $_.FullName }
+    Expand-Archive -Path "$($cache_path)\$($sdl2_ttf_zip)" -DestinationPath $unzip_path_sdl2 -Force
+    Write-Host "Consolidating files into $($unzip_path_sdl2)"
+    $expanded = Get-ChildItem -Path $unzip_path_sdl2 -Filter "SDL2*" -ErrorAction SilentlyContinue -Force | ForEach-Object { $_.FullName }
     foreach ($folder in $expanded) {
-        Copy-Item -Path "$($folder)\*" -Destination $unzip_path -Exclude "docs", "*.txt" -Recurse -Force -ErrorAction SilentlyContinue
+        Copy-Item -Path "$($folder)\*" -Destination $unzip_path_sdl2 -Exclude "docs", "*.txt" -Recurse -Force -ErrorAction SilentlyContinue
         Remove-Item $folder -Force -Recurse -ErrorAction SilentlyContinue
     }
 } else {

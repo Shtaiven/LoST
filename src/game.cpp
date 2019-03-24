@@ -1,12 +1,11 @@
-#include "SDL_image.h"
 #include <iostream>
-#include <string>
+#include "SDL_image.h"
 #include "game.hpp"
 
 // Initialize the game with a window width and height, and a title
 Game::Game(std::string title, int width, int height)
 {
-    m_inited = false;
+    m_inited = true;
     m_title = title;
     m_width = width;
     m_height = height;
@@ -15,6 +14,7 @@ Game::Game(std::string title, int width, int height)
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
     {
         std::cerr << "Couldn't initialize SDL: " << SDL_GetError() << std::endl;
+        m_inited = false;
     }
     else
     {
@@ -23,16 +23,15 @@ Game::Game(std::string title, int width, int height)
         if (!(IMG_Init(img_flags) & img_flags))
         {
             std::cerr << "Couldn't initialize SDL_image: " << IMG_GetError() << std::endl;
+            m_inited = false;
         }
-        else
-        {
-            m_inited = true;
+
+        // Initialize SDL_ttf
+        if(TTF_Init() == -1) {
+            std::cerr << "Couldn't initialize SDL_ttf: " << TTF_GetError() << std::endl;
+            m_inited = false;
         }
     }
-
-    // Clean up on exit
-    atexit(SDL_Quit);
-    atexit(IMG_Quit);
 }
 
 // Destructor
@@ -43,6 +42,16 @@ Game::~Game()
 
 void Game::close()
 {
+    // Free textures
+    for (int i = m_sprite_list.size()-1; i >= 0; --i) {
+        delete m_sprite_list[i];
+    }
+    m_sprite_list.clear();
+
+    // Free font
+    TTF_CloseFont(m_font);
+    m_font = NULL;
+
     // Destroy window
     SDL_DestroyWindow(m_window);
     m_window = NULL;
@@ -50,6 +59,11 @@ void Game::close()
     // Destroy renderer
     SDL_DestroyRenderer(m_renderer);
     m_renderer = NULL;
+
+    // Clean up on exit
+    TTF_Quit();
+    IMG_Quit();
+    SDL_Quit();
 }
 
 int Game::setup()
@@ -76,14 +90,28 @@ int Game::setup()
     }
     std::cout << "Created renderer" << std::endl;
 
+    // Create a title
+    Sprite* title_sprite = new Sprite();
+    m_font = TTF_OpenFont(LoST_ASSETS_FONT_TITLE, LoST_ASSETS_FONT_TITLE_POINT);
+    SDL_Color title_color = { 0xFF, 0xFF, 0xFF, 0xFF };
+    if (!title_sprite->loadText(m_font, m_renderer, m_title.c_str(), title_color)) return 1;
+    double title_scale = m_height*0.001;
+    title_sprite->setSize(title_sprite->getWidth()*title_scale, title_sprite->getHeight()*title_scale);
+    title_sprite->setPosition((m_width - title_sprite->getWidth())/2, m_height*0.1);
+
     // Create a character sprite
-    m_player = Player();
-    SDL_Rect player_info = {0};
-    player_info.w = 180;
-    player_info.h = 280;
-    player_info.x = (m_width - player_info.w) / 2;
-    player_info.y = m_height - player_info.h;
-    if (!m_player.load("../../assets/adventurer-spritesheet.png", m_renderer, &player_info)) return 1;
+    LoST_Player* player_sprite = new LoST_Player();
+    SDL_Rect player_rect = {0};
+    int player_scale = m_height*0.0075;
+    player_rect.w = LoST_ASSETS_PLAYER_FRAME_WIDTH*player_scale;
+    player_rect.h = LoST_ASSETS_PLAYER_FRAME_HEIGHT*player_scale;
+    player_rect.x = (m_width - player_rect.w) / 2;
+    player_rect.y = m_height - player_rect.h;
+    if (!player_sprite->loadImage(LoST_ASSETS_PLAYER, m_renderer, &player_rect)) return 1;
+
+    // Add sprites to sprite list
+    m_sprite_list.push_back(title_sprite);
+    m_sprite_list.push_back(player_sprite);
 
     // Update the surface
     update();
@@ -97,14 +125,10 @@ void Game::update()
     SDL_SetRenderDrawColor(m_renderer, 0x00, 0x00, 0x00, 0xFF);
     SDL_RenderClear(m_renderer);
 
-    // Render the player to the screen
-    SDL_Rect player_clip = {
-        14, // x
-        7,  // y
-        18, // w
-        28  // h
-    };
-    m_player.render(&player_clip);
+    // Render all sprites to the screen
+    for (int i = 0; i < m_sprite_list.size(); ++i) {
+        m_sprite_list[i]->render();
+    }
 
     // Update the screen
     SDL_RenderPresent(m_renderer);
@@ -135,8 +159,10 @@ int Game::loop()
             }
             else
             {
-                // Handle player keyboard events
-                m_player.handleEvent(e);
+                // Handle player events
+                for (int i = 0; i < m_sprite_list.size(); ++i) {
+                    m_sprite_list[i]->handleEvent(e);
+                }
             }
         }
 

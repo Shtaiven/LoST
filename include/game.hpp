@@ -1,9 +1,12 @@
 #ifndef GAME_HPP__
 #define GAME_HPP__
 
-#include "SDL.h"
 #include <string>
+#include <vector>
+#include "SDL.h"
+#include "SDL_ttf.h"
 #include "sprite.hpp"
+#include "LoST.hpp"
 
 
 // Game class creates SDL game window and listens to events
@@ -17,7 +20,6 @@ class Game {
         void update();
 
     private:
-        friend class Sprite;
         SDL_Window* m_window = NULL;
         SDL_Renderer* m_renderer = NULL;
         bool m_quit = false;
@@ -25,7 +27,8 @@ class Game {
         int m_width;
         int m_height;
         std::string m_title;
-        Player m_player;
+        TTF_Font* m_font = NULL;
+        std::vector<Sprite*> m_sprite_list;
 };
 
 
