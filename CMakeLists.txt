@@ -36,4 +36,8 @@ if(WIN32)
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
         "${SDL2_DIR}/${VC_LIB_PATH_SUFFIX}/SDL2_image.dll"
         $<TARGET_FILE_DIR:LoST>)
+    add_custom_command(TARGET LoST POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${SDL2_DIR}/${VC_LIB_PATH_SUFFIX}/SDL2_ttf.dll"
+        $<TARGET_FILE_DIR:LoST>)
 endif()
