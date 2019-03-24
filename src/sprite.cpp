@@ -87,6 +87,21 @@ void Sprite::setSize(const SDL_Rect* size) {
     if (size) setSize(size->w, size->h);
 }
 
+void Sprite::setColor(Uint8 red, Uint8 green, Uint8 blue) {
+    //Modulate texture
+    SDL_SetTextureColorMod(m_texture, red, green, blue);
+}
+
+ void Sprite::setAlpha(Uint8 alpha) {
+    //Modulate texture alpha
+    SDL_SetTextureAlphaMod(m_texture, alpha);
+}
+
+void Sprite::setBlendMode(SDL_BlendMode blending) {
+    //Set blending function
+    SDL_SetTextureBlendMode(m_texture, blending);
+}
+
 bool Sprite::noLoad(std::string func_name) {
     return !m_texture;
 }

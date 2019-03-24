@@ -26,6 +26,9 @@ class Sprite {
         void setPosition(const SDL_Rect* pos);
         void setSize(int w, int h);
         void setSize(const SDL_Rect* size);
+        void setColor(Uint8 red, Uint8 green, Uint8 blue);
+        void setAlpha(Uint8 alpha);
+        void setBlendMode(SDL_BlendMode blending);
         virtual int render(const SDL_Rect* clip=NULL);
         virtual int render(int x, int y, const SDL_Rect* clip=NULL);
         virtual void handleEvent(const SDL_Event& e) {}
