@@ -43,7 +43,7 @@ Game::~Game()
 void Game::close()
 {
     // Free textures
-    for (int i = m_sprite_list.size()-1; i >= 0; --i) {
+    for (int i = (int)m_sprite_list.size()-1; i >= 0; --i) {
         delete m_sprite_list[i];
     }
     m_sprite_list.clear();
@@ -96,13 +96,13 @@ int Game::setup()
     SDL_Color title_color = { 0xFF, 0xFF, 0xFF, 0xFF };
     if (!title_sprite->loadText(m_font, m_renderer, m_title.c_str(), title_color)) return 1;
     double title_scale = m_height*0.001;
-    title_sprite->setSize(title_sprite->getWidth()*title_scale, title_sprite->getHeight()*title_scale);
-    title_sprite->setPosition((m_width - title_sprite->getWidth())/2, m_height*0.1);
+    title_sprite->setSize((int)(title_sprite->getWidth()*title_scale), (int)(title_sprite->getHeight()*title_scale));
+    title_sprite->setPosition((int)((m_width - title_sprite->getWidth())/2), (int)(m_height*0.1));
 
     // Create a character sprite
     LoST_Player* player_sprite = new LoST_Player();
     SDL_Rect player_rect = {0};
-    int player_scale = m_height*0.0075;
+    int player_scale = (int)(m_height*0.0075);
     player_rect.w = LoST_ASSETS_PLAYER_FRAME_WIDTH*player_scale;
     player_rect.h = LoST_ASSETS_PLAYER_FRAME_HEIGHT*player_scale;
     player_rect.x = (m_width - player_rect.w) / 2;

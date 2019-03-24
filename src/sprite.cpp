@@ -298,7 +298,7 @@ double AnimatedSprite::getSpeed() {
 
 void AnimatedSprite::setSpeed(double speed) {
     if (speed < 1.0 && speed > 0) {;
-        setFrameDelay(1.0/speed-1);
+        setFrameDelay((int)(1.0/speed-1));
     } else if (speed == 0.0) {
         setFrameDelay(-1);
     } else {
