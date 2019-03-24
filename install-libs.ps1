@@ -7,13 +7,8 @@ param (
 )
 
 # File and folder names
-<<<<<<< HEAD:install-sdl2-devel.ps1
-$cache_path = "$($PSScriptRoot)\.install-cache"
-$unzip_path = "$($PSScriptRoot)\SDL2"
-=======
 $cache_path = "$($PSScriptRoot)\.install-libs-cache"
 $unzip_path_sdl2 = "$($PSScriptRoot)\SDL2"
->>>>>>> animations:install-libs.ps1
 
 # Remove files and exit if the argument was given
 if ($remove) {
