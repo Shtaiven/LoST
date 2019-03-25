@@ -70,7 +70,7 @@ bool Sprite::loadText(TTF_Font* font, SDL_Renderer* renderer, std::string text, 
     SDL_FreeSurface(temp_surface);
 
     return isLoaded();
-}        
+}
 
 // Render the sprite
 int Sprite::render() {
