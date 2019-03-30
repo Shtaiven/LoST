@@ -31,7 +31,7 @@ class LoST_Player : public AnimatedSprite {
         addFrame(LoST_ASSETS_PLAYER_JUMP_FRAME6);
         addFrame(LoST_ASSETS_PLAYER_JUMP_FRAME7);
         setSpeed(1.0/60);
-        idle(true);
+        LoST_SET_ANIMATION(PLAYER, IDLE);
     }
 
     void handleState() {
@@ -43,16 +43,20 @@ class LoST_Player : public AnimatedSprite {
         bool is_crouching = LoST_IS_WITHIN_ANIMATION(PLAYER, CROUCH);
         bool is_idle = LoST_IS_WITHIN_ANIMATION(PLAYER, IDLE);
 
-        // Handle keyboard events
+        // Handle keyboard state
         if (!(current_key_states[SDL_SCANCODE_LEFT]  ||
               current_key_states[SDL_SCANCODE_RIGHT] ||
               current_key_states[SDL_SCANCODE_UP]    ||
               current_key_states[SDL_SCANCODE_DOWN]) &&
               !is_jumping
             ) {
-            idle(!is_idle);
+            if (!is_idle) {
+                LoST_SET_ANIMATION(PLAYER, IDLE);
+            }
         } else if (current_key_states[SDL_SCANCODE_DOWN]) {
-                crouch(!is_crouching);
+            if (!is_crouching) {
+                LoST_SET_ANIMATION(PLAYER, CROUCH);
+            }
         } else {
             if (current_key_states[SDL_SCANCODE_LEFT]) {
                 moveLeft();
@@ -60,8 +64,8 @@ class LoST_Player : public AnimatedSprite {
             if (current_key_states[SDL_SCANCODE_RIGHT]) {
                 moveRight();
             }
-            if (current_key_states[SDL_SCANCODE_UP]) {
-                jump(!is_jumping);
+            if (current_key_states[SDL_SCANCODE_UP] && !is_jumping) {
+                LoST_SET_ANIMATION(PLAYER, JUMP);
             }
         }
 
@@ -99,24 +103,6 @@ class LoST_Player : public AnimatedSprite {
         m_render_rect.x += m_speed;
         if (m_render_rect.x > max_w - m_render_rect.w) {
             m_render_rect.x = max_w - m_render_rect.w;
-        }
-    }
-
-    void jump(bool update_anim=false) {
-        if (update_anim) {
-            LoST_SET_ANIMATION(PLAYER, JUMP);
-        }
-    }
-
-    void crouch(bool update_anim=false) {
-        if (update_anim) {
-            LoST_SET_ANIMATION(PLAYER, CROUCH);
-        }
-    }
-
-    void idle(bool update_anim=false) {
-        if (update_anim) {
-            LoST_SET_ANIMATION(PLAYER, IDLE);
         }
     }
 };
