@@ -30,61 +30,69 @@ class LoST_Player : public AnimatedSprite {
         addFrame(LoST_ASSETS_PLAYER_JUMP_FRAME5);
         addFrame(LoST_ASSETS_PLAYER_JUMP_FRAME6);
         addFrame(LoST_ASSETS_PLAYER_JUMP_FRAME7);
-        setSpeed(1.0/30);
-        idle();
+        setSpeed(1.0/60);
+        idle(true);
     }
 
-    void handleEvent(const SDL_Event& e) {
+    void handleState() {
         if (!isLoaded()) return;
+        const Uint8* current_key_states = SDL_GetKeyboardState(NULL);
+        SDL_Point prev_pos = { m_render_rect.x, m_render_rect.y };
+        bool is_jumping = LoST_IS_WITHIN_ANIMATION(PLAYER, JUMP) && (getCurrentFrameIndex() != LoST_ASSETS_PLAYER_JUMP_END_INDEX);
+        bool is_running = LoST_IS_WITHIN_ANIMATION(PLAYER, RUN);
+        bool is_crouching = LoST_IS_WITHIN_ANIMATION(PLAYER, CROUCH);
+        bool is_idle = LoST_IS_WITHIN_ANIMATION(PLAYER, IDLE);
 
         // Handle keyboard events
-        if (e.type == SDL_KEYDOWN) {
-            switch (e.key.keysym.sym) {
-                case SDLK_LEFT:
-                    moveLeft(m_prev_keydown != SDLK_LEFT);
-                    break;
-
-                case SDLK_RIGHT:
-                    moveRight(m_prev_keydown != SDLK_RIGHT);
-                    break;
-
-                case SDLK_UP:
-                    jump(m_prev_keydown != SDLK_UP);
-                    break;
-
-                case SDLK_DOWN:
-                    crouch(m_prev_keydown != SDLK_DOWN);
-                    break;
+        if (!(current_key_states[SDL_SCANCODE_LEFT]  ||
+              current_key_states[SDL_SCANCODE_RIGHT] ||
+              current_key_states[SDL_SCANCODE_UP]    ||
+              current_key_states[SDL_SCANCODE_DOWN]) &&
+              !is_jumping
+            ) {
+            idle(!is_idle);
+        } else if (current_key_states[SDL_SCANCODE_DOWN]) {
+                crouch(!is_crouching);
+        } else {
+            if (current_key_states[SDL_SCANCODE_LEFT]) {
+                moveLeft();
             }
-            m_prev_keydown = e.key.keysym.sym;
-        } else if (e.type == SDL_KEYUP) {
-            idle();
-            m_prev_keydown = SDLK_UNKNOWN;
+            if (current_key_states[SDL_SCANCODE_RIGHT]) {
+                moveRight();
+            }
+            if (current_key_states[SDL_SCANCODE_UP]) {
+                jump(!is_jumping);
+            }
+        }
+
+        // Checking if we should update sprite animation
+        // Are we currently jumping? If so, stay in jump animation
+        if (!is_jumping) {
+            // Has our x position changed?
+            if (m_render_rect.x > prev_pos.x && getFlip() != SDL_FLIP_NONE) {
+                setFlip(SDL_FLIP_NONE);
+            } else if (m_render_rect.x < prev_pos.x && getFlip() != SDL_FLIP_HORIZONTAL) {
+                setFlip(SDL_FLIP_HORIZONTAL);
+            }
+
+            // Are we already in the running animation
+            if (!is_running && prev_pos.x != m_render_rect.x) {
+                LoST_SET_ANIMATION(PLAYER, RUN);
+            }
         }
     }
 
     private:
-    int m_speed = 30;
-    int m_prev_keydown = SDLK_UNKNOWN;
+    int m_speed = 1;
 
-    void moveLeft(bool update_anim=false) {
-        if (update_anim)  {
-            LoST_SET_ANIMATION(RUN);
-            setFlip(SDL_FLIP_HORIZONTAL);
-        }
-
+    void moveLeft() {
         m_render_rect.x -= m_speed;
         if (m_render_rect.x < 0) {
             m_render_rect.x = 0;
         }
     }
 
-    void moveRight(bool update_anim=false) {
-        if (update_anim)  {
-            LoST_SET_ANIMATION(RUN);
-            setFlip(SDL_FLIP_NONE);
-        }
-
+    void moveRight() {
         int max_w, max_h;
         SDL_GetRendererOutputSize(m_renderer, &max_w, &max_h);
 
@@ -96,20 +104,20 @@ class LoST_Player : public AnimatedSprite {
 
     void jump(bool update_anim=false) {
         if (update_anim) {
-            LoST_SET_ANIMATION(JUMP);
+            LoST_SET_ANIMATION(PLAYER, JUMP);
         }
     }
 
     void crouch(bool update_anim=false) {
         if (update_anim) {
-            LoST_SET_ANIMATION(CROUCH);
+            LoST_SET_ANIMATION(PLAYER, CROUCH);
         }
     }
 
-    void idle() {
-        setStartFrameIndex(LoST_ASSETS_PLAYER_IDLE_START_INDEX);
-        setEndFrameIndex(LoST_ASSETS_PLAYER_IDLE_END_INDEX);
-        loop(LoST_ASSETS_PLAYER_IDLE_LOOPS);
+    void idle(bool update_anim=false) {
+        if (update_anim) {
+            LoST_SET_ANIMATION(PLAYER, IDLE);
+        }
     }
 };
 

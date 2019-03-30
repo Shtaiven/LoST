@@ -166,6 +166,11 @@ int Game::loop()
             }
         }
 
+        // Handle player state
+        for (int i = 0; i < m_sprite_list.size(); ++i) {
+            m_sprite_list[i]->handleState();
+        }
+
         // Update game state and draw to window
         update();
     }
