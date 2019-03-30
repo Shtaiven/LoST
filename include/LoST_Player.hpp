@@ -34,7 +34,7 @@ class LoST_Player : public AnimatedSprite {
         LoST_SET_ANIMATION(PLAYER, IDLE);
     }
 
-    void handleState() {
+    void handleState(Uint32 ms=0) {
         if (!isLoaded()) return;
         const Uint8* current_key_states = SDL_GetKeyboardState(NULL);
         SDL_Point prev_pos = { m_render_rect.x, m_render_rect.y };
@@ -53,7 +53,7 @@ class LoST_Player : public AnimatedSprite {
             if (!is_idle) {
                 LoST_SET_ANIMATION(PLAYER, IDLE);
             }
-        } else if (current_key_states[SDL_SCANCODE_DOWN]) {
+        } else if (current_key_states[SDL_SCANCODE_DOWN] && !is_jumping) {
             if (!is_crouching) {
                 LoST_SET_ANIMATION(PLAYER, CROUCH);
             }

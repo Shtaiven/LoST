@@ -46,7 +46,7 @@ class Sprite {
         virtual int render();
         virtual int render(int x, int y);
         virtual void handleEvent(const SDL_Event& e) {}
-        virtual void handleState() {}
+        virtual void handleState(Uint32 ms=0) {}
 
     protected:
         void loadTextureFromSurface(SDL_Surface* surface, SDL_Renderer* renderer, const SDL_Rect* render_rect);
