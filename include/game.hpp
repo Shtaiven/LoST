@@ -6,6 +6,7 @@
 #include "SDL.h"
 #include "SDL_ttf.h"
 #include "sprite.hpp"
+#include "timer.hpp"
 #include "LoST.hpp"
 
 
