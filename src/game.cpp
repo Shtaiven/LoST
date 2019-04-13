@@ -42,11 +42,15 @@ Game::~Game()
 
 void Game::close()
 {
+    // Stop fps timer
+    m_fps_timer.stop();
+
     // Free textures
     for (int i = (int)m_sprite_list.size()-1; i >= 0; --i) {
         delete m_sprite_list[i];
     }
     m_sprite_list.clear();
+    delete m_fps_sprite;
 
     // Free font
     TTF_CloseFont(m_font);
@@ -64,6 +68,17 @@ void Game::close()
     TTF_Quit();
     IMG_Quit();
     SDL_Quit();
+}
+
+void Game::loadFPSDisplay(float fps) {
+    m_fps_string.str("");
+    m_fps_string << fps;
+
+    SDL_Color fps_color = { 0x00, 0xFF, 0x00, 0xFF };
+    if (!m_fps_sprite->loadText(m_font, m_renderer, m_fps_string.str().c_str(), fps_color)) return;
+    double fps_scale = m_height*0.0005;
+    m_fps_sprite->setSize((int)(m_fps_sprite->getWidth()*fps_scale), (int)(m_fps_sprite->getHeight()*fps_scale));
+    m_fps_sprite->setPosition(5, 5);
 }
 
 int Game::setup()
@@ -90,14 +105,20 @@ int Game::setup()
     }
     std::cout << "Created renderer" << std::endl;
 
+    // Load font
+    m_font = TTF_OpenFont(LoST_ASSETS_FONT_TITLE, LoST_ASSETS_FONT_TITLE_POINT);
+
     // Create a title
     Sprite* title_sprite = new Sprite();
-    m_font = TTF_OpenFont(LoST_ASSETS_FONT_TITLE, LoST_ASSETS_FONT_TITLE_POINT);
     SDL_Color title_color = { 0xFF, 0xFF, 0xFF, 0xFF };
     if (!title_sprite->loadText(m_font, m_renderer, m_title.c_str(), title_color)) return 1;
     double title_scale = m_height*0.001;
     title_sprite->setSize((int)(title_sprite->getWidth()*title_scale), (int)(title_sprite->getHeight()*title_scale));
     title_sprite->setPosition((int)((m_width - title_sprite->getWidth())/2), (int)(m_height*0.1));
+
+    // Create FPS counter
+    m_fps_sprite = new Sprite();
+    loadFPSDisplay(0.0);
 
     // Create a character sprite
     LoST_Player* player_sprite = new LoST_Player();
@@ -113,6 +134,10 @@ int Game::setup()
     m_sprite_list.push_back(title_sprite);
     m_sprite_list.push_back(player_sprite);
 
+    // Start the fps timer
+    m_counted_frames = 0;
+    m_fps_timer.start();
+
     // Update the surface
     update();
 
@@ -121,6 +146,15 @@ int Game::setup()
 
 void Game::update()
 {
+    // Calculate and correct fps
+    float avg_fps = m_counted_frames / (m_fps_timer.getTicks() / 1000.0);
+    if (avg_fps > 2000000) {
+        avg_fps = 0;
+    }
+
+    // Load FPS texture
+    loadFPSDisplay(avg_fps);
+
     // Fill the screen black
     SDL_SetRenderDrawColor(m_renderer, 0x00, 0x00, 0x00, 0xFF);
     SDL_RenderClear(m_renderer);
@@ -129,6 +163,9 @@ void Game::update()
     for (int i = 0; i < m_sprite_list.size(); ++i) {
         m_sprite_list[i]->render();
     }
+
+    // Render FPS to the screen
+    m_fps_sprite->render();
 
     // Update the screen
     SDL_RenderPresent(m_renderer);
@@ -173,6 +210,8 @@ int Game::loop()
 
         // Update game state and draw to window
         update();
+
+        ++m_counted_frames;
     }
 
     return 0;

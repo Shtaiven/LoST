@@ -2,6 +2,7 @@
 #define GAME_HPP__
 
 #include <string>
+#include <sstream>
 #include <vector>
 #include "SDL.h"
 #include "SDL_ttf.h"
@@ -30,6 +31,11 @@ class Game {
         std::string m_title;
         TTF_Font* m_font = NULL;
         std::vector<Sprite*> m_sprite_list;
+        Uint32 m_counted_frames;
+        Timer m_fps_timer;
+        Sprite* m_fps_sprite = NULL;
+        std::stringstream m_fps_string;
+        void loadFPSDisplay(float fps);
 };
 
 
