@@ -70,7 +70,7 @@ void Game::close()
     SDL_Quit();
 }
 
-void Game::loadFPSDisplay(float fps) {
+void Game::loadFPSDisplay(double fps) {
     m_fps_string.str("");
     m_fps_string << fps;
 
@@ -147,7 +147,7 @@ int Game::setup()
 void Game::update()
 {
     // Calculate and correct fps
-    float avg_fps = m_counted_frames / (m_fps_timer.getTicks() / 1000.0);
+    double avg_fps = m_counted_frames / (m_fps_timer.getTicks() / 1000.0);
     if (avg_fps > 2000000) {
         avg_fps = 0;
     }

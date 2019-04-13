@@ -35,7 +35,7 @@ class Game {
         Timer m_fps_timer;
         Sprite* m_fps_sprite = NULL;
         std::stringstream m_fps_string;
-        void loadFPSDisplay(float fps);
+        void loadFPSDisplay(double fps);
 };
 
 
