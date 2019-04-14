@@ -44,6 +44,7 @@ void Game::close()
 {
     // Stop fps timer
     m_fps_timer.stop();
+    m_fps_cap_timer.stop();
 
     // Free textures
     for (int i = (int)m_sprite_list.size()-1; i >= 0; --i) {
@@ -97,13 +98,22 @@ int Game::setup()
     std::cout << "Created window" << std::endl;
 
     // Get window renderer
-    m_renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    Uint32 renderer_flags = SDL_RENDERER_ACCELERATED;
+    if (m_vsync_enabled) renderer_flags |= SDL_RENDERER_PRESENTVSYNC;
+    m_renderer = SDL_CreateRenderer(m_window, -1, renderer_flags);
     if (m_renderer == NULL)
     {
         std::cerr << "Couldn't create renderer: " << SDL_GetError() << std::endl;
         return 1;
     }
     std::cout << "Created renderer" << std::endl;
+
+    // Due to a bug up to SDL 2.0.9 on macOS 10.14, VSYNC doesn't work, so enable frame cap instead
+    #ifdef __APPLE__
+    if (!SDL_VERSION_ATLEAST(2, 0, 10)) {
+        capFPS(60);
+    }
+    #endif // __APPLE__
 
     // Load font
     m_font = TTF_OpenFont(LoST_ASSETS_FONT_TITLE, LoST_ASSETS_FONT_TITLE_POINT);
@@ -165,7 +175,7 @@ void Game::update()
     }
 
     // Render FPS to the screen
-    m_fps_sprite->render();
+    if (m_display_fps) m_fps_sprite->render();
 
     // Update the screen
     SDL_RenderPresent(m_renderer);
@@ -186,6 +196,9 @@ int Game::loop()
     // While the game is running
     while (!quit)
     {
+        // Start framrate cap timer
+        m_fps_cap_timer.start();
+
         // Handle events in the event queue
         while (SDL_PollEvent(&e))
         {
@@ -211,8 +224,29 @@ int Game::loop()
         // Update game state and draw to window
         update();
 
+        // Count the number of frames to calculate average FPS
         ++m_counted_frames;
+
+        // Cap the framerate if vsync is disabled and fps cap is > 0
+        if (!m_vsync_enabled && m_fps_cap > 0) {
+            int frame_ticks = m_fps_cap_timer.getTicks();
+            if (frame_ticks < m_ticks_per_frame) {
+                // Wait remaining time
+                SDL_Delay(m_ticks_per_frame - frame_ticks);
+            }
+        }
     }
 
     return 0;
+}
+
+void Game::capFPS(Uint32 fps) {
+    m_fps_cap = fps;
+    m_ticks_per_frame = 1000.0 / m_fps_cap;
+    enableVsync(false);
+}
+
+void Game::enableVsync(bool enable) {
+    m_vsync_enabled = enable;
+    SDL_SetHint(SDL_HINT_RENDER_VSYNC, (enable ? "1" : "0"));
 }
