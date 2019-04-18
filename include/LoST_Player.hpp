@@ -30,7 +30,7 @@ class LoST_Player : public AnimatedSprite {
         addFrame(LoST_ASSETS_PLAYER_JUMP_FRAME5);
         addFrame(LoST_ASSETS_PLAYER_JUMP_FRAME6);
         addFrame(LoST_ASSETS_PLAYER_JUMP_FRAME7);
-        setSpeed(1.0/60);
+        setSpeed(1.0/7.5);
         LoST_SET_ANIMATION(PLAYER, IDLE);
     }
 
@@ -87,7 +87,7 @@ class LoST_Player : public AnimatedSprite {
     }
 
     private:
-    int m_speed = 1;
+    int m_speed = 10;
 
     void moveLeft() {
         m_render_rect.x -= m_speed;

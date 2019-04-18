@@ -232,7 +232,7 @@ int Game::loop()
             int frame_ticks = m_fps_cap_timer.getTicks();
             if (frame_ticks < m_ticks_per_frame) {
                 // Wait remaining time
-                SDL_Delay(m_ticks_per_frame - frame_ticks);
+                SDL_Delay((Uint32) m_ticks_per_frame - frame_ticks);
             }
         }
     }
