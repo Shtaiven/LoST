@@ -30,7 +30,7 @@ void Sprite::loadTextureFromSurface(SDL_Surface* surface, SDL_Renderer* renderer
     }
 
     // Save info for later use during rendering
-    if (render_rect) setRenderRect(render_rect);
+    setRenderRect(render_rect);
     m_renderer = renderer;
 }
 
@@ -89,6 +89,14 @@ void Sprite::getRenderRect(SDL_Rect* render_rect) {
 
 void Sprite::setRenderRect(const SDL_Rect* render_rect) {
     if (render_rect) memcpy(&m_render_rect, render_rect, sizeof(SDL_Rect));
+}
+
+void getCollisionRect(SDL_Rect* collision_rect) {
+    if (collision_rect) memcpy(collision_rect, &m_collision_rect, sizeof(SDL_Rect));
+}
+
+void setCollisionRect(const SDL_Rect* collision_rect) {
+    if (collision_rect) memcpy(&m_collision_rect, collision_rect, sizeof(SDL_Rect));
 }
 
 void Sprite::setCenter(SDL_Point* center) {

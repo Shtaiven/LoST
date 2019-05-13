@@ -23,6 +23,8 @@ class Sprite {
         bool loadText(TTF_Font* font, SDL_Renderer* renderer, std::string text, const SDL_Color& color={0,0,0,0xFF}, const SDL_Point& pos={0,0});
         void getRenderRect(SDL_Rect* render_rect);
         void setRenderRect(const SDL_Rect* render_rect);
+        void getCollisionRect(SDL_Rect* collision_rect);
+        void setCollisionRect(const SDL_Rect* collision_rect);
         void setCenter(SDL_Point* center);
         int getX();
         void setX(int x);
@@ -54,6 +56,7 @@ class Sprite {
         SDL_Texture* m_texture = NULL;
         SDL_Renderer* m_renderer = NULL;
         SDL_Rect m_render_rect = {0};
+        SDL_Rect m_collision_rect = {0};
         SDL_Rect* m_clip = NULL;
         SDL_Point* m_center = NULL;
         Uint8 m_flip = SDL_FLIP_NONE;
