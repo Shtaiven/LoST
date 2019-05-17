@@ -91,11 +91,11 @@ void Sprite::setRenderRect(const SDL_Rect* render_rect) {
     if (render_rect) memcpy(&m_render_rect, render_rect, sizeof(SDL_Rect));
 }
 
-void getCollisionRect(SDL_Rect* collision_rect) {
+void Sprite::getCollisionRect(SDL_Rect* collision_rect) {
     if (collision_rect) memcpy(collision_rect, &m_collision_rect, sizeof(SDL_Rect));
 }
 
-void setCollisionRect(const SDL_Rect* collision_rect) {
+void Sprite::setCollisionRect(const SDL_Rect* collision_rect) {
     if (collision_rect) memcpy(&m_collision_rect, collision_rect, sizeof(SDL_Rect));
 }
 
@@ -180,6 +180,32 @@ void Sprite::clip(SDL_Rect* clip_rect) {
 
 bool Sprite::isLoaded() {
     return !!m_texture;
+}
+
+bool Sprite::checkCollision(const Sprite& a, const Sprite& b) {
+    // The sides of the rectangles
+    int left_a, left_b;
+    int right_a, right_b;
+    int top_a, top_b;
+    int bottom_a, bottom_b;
+
+    // Calculate the sides of rect A
+    left_a = a.m_collision_rect.x;
+    right_a = a.m_collision_rect.x + a.m_collision_rect.w;
+    top_a = a.m_collision_rect.y;
+    bottom_a = a.m_collision_rect.y + a.m_collision_rect.h;
+
+    // Calculate the sides of rect B
+    left_b = b.m_collision_rect.x;
+    right_b = b.m_collision_rect.x + b.m_collision_rect.w;
+    top_b = b.m_collision_rect.y;
+    bottom_b = b.m_collision_rect.y + b.m_collision_rect.h;
+
+    // If any of the sides from A are within B, return true
+    return !(bottom_a <= top_b ||
+             top_a >= bottom_b ||
+             right_a <= left_b ||
+             left_a >= right_b);
 }
 
 
