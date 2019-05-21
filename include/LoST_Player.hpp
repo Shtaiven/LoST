@@ -8,6 +8,7 @@ class LoST_Player : public AnimatedSprite {
     public:
     LoST_Player() {
         ASSIGN_SDL_RECT(m_render_rect, 0, 0, LoST_ASSETS_PLAYER_FRAME_WIDTH, LoST_ASSETS_PLAYER_FRAME_HEIGHT);
+        ASSIGN_SDL_RECT(m_collision_rect, 16, 7, 17, 29);
         addFrame(LoST_ASSETS_PLAYER_IDLE_FRAME0);
         addFrame(LoST_ASSETS_PLAYER_IDLE_FRAME1);
         addFrame(LoST_ASSETS_PLAYER_IDLE_FRAME2);

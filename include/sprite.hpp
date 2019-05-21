@@ -25,6 +25,7 @@ class Sprite {
         void setRenderRect(const SDL_Rect* render_rect);
         void getCollisionRect(SDL_Rect* collision_rect);
         void setCollisionRect(const SDL_Rect* collision_rect);
+        bool hasCollision();
         void setCenter(SDL_Point* center);
         int getX();
         void setX(int x);
@@ -62,6 +63,7 @@ class Sprite {
         SDL_Point* m_center = NULL;
         Uint8 m_flip = SDL_FLIP_NONE;
         double m_rotation = 0.0;
+        bool m_collision_debug = true;
 };
 
 

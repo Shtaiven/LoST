@@ -74,7 +74,18 @@ bool Sprite::loadText(TTF_Font* font, SDL_Renderer* renderer, std::string text, 
 
 // Render the sprite
 int Sprite::render() {
-    return SDL_RenderCopyEx(m_renderer, m_texture, m_clip, &m_render_rect, m_rotation, m_center, (SDL_RendererFlip) m_flip);
+    int ret = SDL_RenderCopyEx(m_renderer, m_texture, m_clip, &m_render_rect, m_rotation, m_center, (SDL_RendererFlip) m_flip);
+    if (m_collision_debug && hasCollision()) {
+        SDL_Rect displaced_collision_rect = {
+            m_render_rect.x + m_collision_rect.x,
+            m_render_rect.y + m_collision_rect.y,
+            m_collision_rect.w,
+            m_collision_rect.h
+        };
+        SDL_SetRenderDrawColor(m_renderer, 255, 0, 0, 255);
+        SDL_RenderDrawRect(m_renderer, &displaced_collision_rect);
+    }
+    return ret;
 }
 
 // Render the sprite to a specific location
@@ -182,7 +193,18 @@ bool Sprite::isLoaded() {
     return !!m_texture;
 }
 
+bool Sprite::hasCollision() {
+    return (m_collision_rect.w || m_collision_rect.h);
+}
+
 bool Sprite::checkCollision(const Sprite& a, const Sprite& b) {
+    // TODO: Be able to check combinations of multiple circular or rectangular colliders
+    // If a or b has no dimension, return false
+    if (!a.hasCollision() || !b.hasCollision())
+    {
+        return false;
+    }
+
     // The sides of the rectangles
     int left_a, left_b;
     int right_a, right_b;
@@ -190,16 +212,16 @@ bool Sprite::checkCollision(const Sprite& a, const Sprite& b) {
     int bottom_a, bottom_b;
 
     // Calculate the sides of rect A
-    left_a = a.m_collision_rect.x;
-    right_a = a.m_collision_rect.x + a.m_collision_rect.w;
-    top_a = a.m_collision_rect.y;
-    bottom_a = a.m_collision_rect.y + a.m_collision_rect.h;
+    left_a = a.m_collision_rect.x + a.m_render_rect.x;
+    right_a = left_a + a.m_collision_rect.w;
+    top_a = a.m_collision_rect.y + a.m_render_rect.y;
+    bottom_a = top_a + a.m_collision_rect.h;
 
     // Calculate the sides of rect B
-    left_b = b.m_collision_rect.x;
-    right_b = b.m_collision_rect.x + b.m_collision_rect.w;
-    top_b = b.m_collision_rect.y;
-    bottom_b = b.m_collision_rect.y + b.m_collision_rect.h;
+    left_b = b.m_collision_rect.x + b.m_render_rect.x;
+    right_b = left_b + b.m_collision_rect.w;
+    top_b = b.m_collision_rect.y + a.m_render_rect.y;
+    bottom_b = top_b + b.m_collision_rect.h;
 
     // If any of the sides from A are within B, return true
     return !(bottom_a <= top_b ||
