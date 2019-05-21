@@ -197,10 +197,10 @@ bool Sprite::hasCollision() {
     return (m_collision_rect.w || m_collision_rect.h);
 }
 
-bool Sprite::checkCollision(const Sprite& a, const Sprite& b) {
+bool Sprite::checkCollision(Sprite* a, Sprite* b) {
     // TODO: Be able to check combinations of multiple circular or rectangular colliders
     // If a or b has no dimension, return false
-    if (!a.hasCollision() || !b.hasCollision())
+    if (!a->hasCollision() || !b->hasCollision())
     {
         return false;
     }
@@ -212,16 +212,16 @@ bool Sprite::checkCollision(const Sprite& a, const Sprite& b) {
     int bottom_a, bottom_b;
 
     // Calculate the sides of rect A
-    left_a = a.m_collision_rect.x + a.m_render_rect.x;
-    right_a = left_a + a.m_collision_rect.w;
-    top_a = a.m_collision_rect.y + a.m_render_rect.y;
-    bottom_a = top_a + a.m_collision_rect.h;
+    left_a = a->m_collision_rect.x + a->m_render_rect.x;
+    right_a = left_a + a->m_collision_rect.w;
+    top_a = a->m_collision_rect.y + a->m_render_rect.y;
+    bottom_a = top_a + a->m_collision_rect.h;
 
     // Calculate the sides of rect B
-    left_b = b.m_collision_rect.x + b.m_render_rect.x;
-    right_b = left_b + b.m_collision_rect.w;
-    top_b = b.m_collision_rect.y + a.m_render_rect.y;
-    bottom_b = top_b + b.m_collision_rect.h;
+    left_b = b->m_collision_rect.x + b->m_render_rect.x;
+    right_b = left_b + b->m_collision_rect.w;
+    top_b = b->m_collision_rect.y + b->m_render_rect.y;
+    bottom_b = top_b + b->m_collision_rect.h;
 
     // If any of the sides from A are within B, return true
     return !(bottom_a <= top_b ||

@@ -5,7 +5,7 @@
 
 
 class LoST_Player : public AnimatedSprite {
-    public:
+public:
     LoST_Player() {
         ASSIGN_SDL_RECT(m_render_rect, 0, 0, LoST_ASSETS_PLAYER_FRAME_WIDTH, LoST_ASSETS_PLAYER_FRAME_HEIGHT);
         ASSIGN_SDL_RECT(m_collision_rect, 16, 7, 17, 29);
@@ -87,13 +87,13 @@ class LoST_Player : public AnimatedSprite {
         }
     }
 
-    private:
+private:
     int m_speed = 10;
 
     void moveLeft() {
         m_render_rect.x -= m_speed;
-        if (m_render_rect.x < 0) {
-            m_render_rect.x = 0;
+        if (m_render_rect.x < -m_collision_rect.x) {
+            m_render_rect.x = -m_collision_rect.x;
         }
     }
 
@@ -102,8 +102,8 @@ class LoST_Player : public AnimatedSprite {
         SDL_GetRendererOutputSize(m_renderer, &max_w, &max_h);
 
         m_render_rect.x += m_speed;
-        if (m_render_rect.x > max_w - m_render_rect.w) {
-            m_render_rect.x = max_w - m_render_rect.w;
+        if (m_render_rect.x + m_collision_rect.x + m_collision_rect.w > max_w) {
+            m_render_rect.x = max_w - m_collision_rect.w - m_collision_rect.x;
         }
     }
 };

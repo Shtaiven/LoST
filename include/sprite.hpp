@@ -50,7 +50,7 @@ class Sprite {
         virtual int render(int x, int y);
         virtual void handleEvent(const SDL_Event& e) {}
         virtual void handleState(Uint32 ms=0) {}
-        static bool checkCollision(const Sprite& a, const Sprite& b);
+        static bool checkCollision(Sprite* a, Sprite* b);
 
     protected:
         void loadTextureFromSurface(SDL_Surface* surface, SDL_Renderer* renderer, const SDL_Rect* render_rect);

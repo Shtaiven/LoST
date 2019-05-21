@@ -133,12 +133,19 @@ int Game::setup()
     // Create a character sprite
     LoST_Player* player_sprite = new LoST_Player();
     SDL_Rect player_rect = {0};
+    SDL_Rect player_collider = {0};
     int player_scale = (int)(m_height*0.0075);
-    player_rect.w = LoST_ASSETS_PLAYER_FRAME_WIDTH*player_scale;
-    player_rect.h = LoST_ASSETS_PLAYER_FRAME_HEIGHT*player_scale;
+    player_rect.w = player_sprite->getWidth()*player_scale;
+    player_rect.h = player_sprite->getHeight()*player_scale;
     player_rect.x = (m_width - player_rect.w) / 2;
     player_rect.y = m_height - player_rect.h;
+    player_sprite->getCollisionRect(&player_collider);
+    player_collider.w *= player_scale;
+    player_collider.h *= player_scale;
+    player_collider.x *= player_scale;
+    player_collider.y *= player_scale;
     if (!player_sprite->loadImage(LoST_ASSETS_PLAYER, m_renderer, &player_rect)) return 1;
+    player_sprite->setCollisionRect(&player_collider);
 
     // Add sprites to sprite list
     m_sprite_list.push_back(title_sprite);
