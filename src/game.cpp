@@ -164,13 +164,17 @@ int Game::setup()
 void Game::update()
 {
     // Calculate and correct fps
-    double avg_fps = m_counted_frames / (m_fps_timer.getTicks() / 1000.0);
-    if (avg_fps > 2000000) {
-        avg_fps = 0;
+    m_avg_fps = 0;
+    m_last_update_ms = m_fps_timer.getTicks();
+    if (m_last_update_ms) {
+        m_avg_fps = m_counted_frames / ((double)m_last_update_ms / 1000.0);
+        if (m_avg_fps > 2000000) {
+            m_avg_fps = 0;
+        }
     }
 
     // Load FPS texture
-    loadFPSDisplay(avg_fps);
+    loadFPSDisplay(m_avg_fps);
 
     // Fill the screen black
     SDL_SetRenderDrawColor(m_renderer, 0x00, 0x00, 0x00, 0xFF);
@@ -203,7 +207,7 @@ int Game::loop()
     // While the game is running
     while (!quit)
     {
-        // Start framrate cap timer
+        // Start framerate cap timer
         m_fps_cap_timer.start();
 
         // Handle events in the event queue
@@ -223,9 +227,16 @@ int Game::loop()
             }
         }
 
+        // Calculate time since last update
+        Uint32 current_ms = m_fps_timer.getTicks();
+        Uint32 elapsed_time_ms = current_ms - m_last_update_ms;
+        if (m_last_update_ms > current_ms) { // anticipate overflow
+            elapsed_time_ms = (Uint32) (1000 / m_avg_fps);
+        }
+
         // Handle player state
         for (int i = 0; i < m_sprite_list.size(); ++i) {
-            m_sprite_list[i]->handleState();
+            m_sprite_list[i]->handleState(elapsed_time_ms);
         }
 
         // Update game state and draw to window
@@ -236,10 +247,10 @@ int Game::loop()
 
         // Cap the framerate if vsync is disabled and fps cap is > 0
         if (!m_vsync_enabled && m_fps_cap > 0) {
-            int frame_ticks = m_fps_cap_timer.getTicks();
-            if (frame_ticks < m_ticks_per_frame) {
+            Uint32 ms_passed = m_fps_cap_timer.getTicks();
+            if (ms_passed < m_ms_per_frame) {
                 // Wait remaining time
-                SDL_Delay((Uint32) m_ticks_per_frame - frame_ticks);
+                SDL_Delay((Uint32) m_ms_per_frame - ms_passed);
             }
         }
     }
@@ -249,7 +260,7 @@ int Game::loop()
 
 void Game::capFPS(Uint32 fps) {
     m_fps_cap = fps;
-    m_ticks_per_frame = 1000.0 / m_fps_cap;
+    m_ms_per_frame = 1000.0 / m_fps_cap;
     enableVsync(false);
 }
 

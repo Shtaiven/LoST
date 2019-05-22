@@ -40,9 +40,11 @@ class Game {
         // Framerate
         bool m_vsync_enabled = true;
         Uint32 m_fps_cap = 0;
-        double m_ticks_per_frame = 0;
+        double m_ms_per_frame = 0;
         Timer m_fps_cap_timer;
         Uint32 m_counted_frames;
+        Uint32 m_last_update_ms;
+        double m_avg_fps;
         Timer m_fps_timer;
         Sprite* m_fps_sprite = NULL;
         std::stringstream m_fps_string;
