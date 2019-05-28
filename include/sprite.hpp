@@ -89,6 +89,9 @@ class AnimatedSprite : virtual public Sprite {
         void setSpeed(double speed=1.0);
         int getFrameDelay();
         void setFrameDelay(int delay=0);
+        int getFrameRate();
+        void setFrameRate(int frames_per_second);
+        void adjustTimeElapsed(int ms);
 
         // Index manipulation
         size_t getCurrentFrameIndex();
@@ -107,9 +110,10 @@ class AnimatedSprite : virtual public Sprite {
         bool m_loop = false;
         int m_frame_delay = 0;
         int m_frames_skipped = 0;
-        int m_framerate = 0;  // in frames/second
-        unsigned int m_time_elapsed_s = 0;
+        int m_frame_rate = 0;  // in frames/second
+        unsigned int m_time_elapsed_ms = 0;
         void updateAnimationLen();
+        size_t calculateNextFrame();
         size_t nextFrameIndex();
 
 };

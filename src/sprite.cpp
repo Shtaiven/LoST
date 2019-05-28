@@ -243,19 +243,37 @@ void AnimatedSprite::updateAnimationLen() {
     }
 }
 
-size_t AnimatedSprite::nextFrameIndex() {
-    size_t next_frame_index = m_current_frame_index;
+size_t AnimatedSprite::calculateNextFrame() {
+    size_t next_frame_diff = m_current_frame_index - m_start_frame_index + 1;
 
-    if (m_frame_delay >= 1) {
-        ++m_frames_skipped %= m_frame_delay;
+    // If we haven't reached the end of the animation or we are looping, calculate the next frame
+    if ((m_animation_len - next_frame_diff) || m_loop) {
+        return next_frame_diff%m_animation_len + m_start_frame_index;
     }
 
-    if (m_animation_len > 1 && !m_frames_skipped && m_frame_delay >= 0) {
-        size_t next_frame_diff = m_current_frame_index - m_start_frame_index + 1;
+    return m_current_frame_index;
+}
 
-        // If we haven't reached the end of the animation or we are looping, calculate the next frame
-        if ((m_animation_len - next_frame_diff) || m_loop) {
-            next_frame_index = next_frame_diff%m_animation_len + m_start_frame_index;
+size_t AnimatedSprite::nextFrameIndex() {
+    size_t next_frame_index = m_current_frame_index;
+    if (!m_frame_rate) {  // use undefined framerate method
+        if (m_frame_delay >= 1) {
+            ++m_frames_skipped %= m_frame_delay;
+        }
+
+        if (m_animation_len > 1 && !m_frames_skipped && m_frame_delay >= 0) {
+            next_frame_index = calculateNextFrame();
+        }
+    } else if (m_frame_rate > 0) {  // use positive framerate method
+        int ms_per_frame = 1.0 / m_frame_rate * 1000.0 / getSpeed();
+        if (m_animation_len > 1 && m_time_elapsed_ms >= ms_per_frame) {
+            int n_frames = m_time_elapsed_ms / ms_per_frame; // number of frames ahead to calculate in case of skipped frames
+            m_time_elapsed_ms %= ms_per_frame;
+            // printf("ms_per_frame: %d, n_frames: %d, m_time_elapsed_ms: %d\n", ms_per_frame, n_frames, m_time_elapsed_ms);
+            int i;
+            for (i = 0; i < n_frames; ++i) {
+                next_frame_index = calculateNextFrame();
+            }
         }
     }
     return next_frame_index;
@@ -265,9 +283,7 @@ int AnimatedSprite::render() {
     if (m_current_frame_index >= numFrames()) return -1;
     clip(&m_frames[m_current_frame_index]);
     int result = Sprite::render();
-    if (m_frame_delay >= 0) {
-        m_current_frame_index = nextFrameIndex();
-    }
+    m_current_frame_index = nextFrameIndex();
     return result;
 }
 
@@ -369,4 +385,16 @@ int AnimatedSprite::getFrameDelay() {
 void AnimatedSprite::setFrameDelay(int delay) {
     m_frame_delay = std::max(delay, -1);
     m_frames_skipped = 0;
+}
+
+int AnimatedSprite::getFrameRate() {
+    return m_frame_rate;
+}
+
+void AnimatedSprite::setFrameRate(int frames_per_second) {
+    m_frame_rate = frames_per_second;
+}
+
+void AnimatedSprite::adjustTimeElapsed(int ms) {
+    m_time_elapsed_ms += ms;
 }

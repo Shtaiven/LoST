@@ -3,25 +3,20 @@
 #include "game.hpp"
 
 // Initialize the game with a window width and height, and a title
-Game::Game(std::string title, int width, int height)
-{
+Game::Game(std::string title, int width, int height) {
     m_inited = true;
     m_title = title;
     m_width = width;
     m_height = height;
 
     // Initialize SDL
-    if (SDL_Init(SDL_INIT_VIDEO) < 0)
-    {
+    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         std::cerr << "Couldn't initialize SDL: " << SDL_GetError() << std::endl;
         m_inited = false;
-    }
-    else
-    {
+    } else {
         //Initialize PNG loading
         int img_flags = IMG_INIT_PNG;
-        if (!(IMG_Init(img_flags) & img_flags))
-        {
+        if (!(IMG_Init(img_flags) & img_flags)) {
             std::cerr << "Couldn't initialize SDL_image: " << IMG_GetError() << std::endl;
             m_inited = false;
         }
@@ -35,13 +30,11 @@ Game::Game(std::string title, int width, int height)
 }
 
 // Destructor
-Game::~Game()
-{
+Game::~Game() {
     close();
 }
 
-void Game::close()
-{
+void Game::close() {
     // Stop fps timer
     m_fps_timer.stop();
     m_fps_cap_timer.stop();
@@ -82,16 +75,14 @@ void Game::loadFPSDisplay(double fps) {
     m_fps_sprite->setPosition(5, 5);
 }
 
-int Game::setup()
-{
+int Game::setup() {
     m_window = SDL_CreateWindow(m_title.c_str(),
                                 SDL_WINDOWPOS_UNDEFINED,
                                 SDL_WINDOWPOS_UNDEFINED,
                                 m_width,
                                 m_height,
                                 SDL_WINDOW_SHOWN);
-    if (m_window == NULL)
-    {
+    if (m_window == NULL) {
         std::cerr << "Couldn't create window: " << SDL_GetError() << std::endl;
         return 1;
     }
@@ -101,8 +92,7 @@ int Game::setup()
     Uint32 renderer_flags = SDL_RENDERER_ACCELERATED;
     if (m_vsync_enabled) renderer_flags |= SDL_RENDERER_PRESENTVSYNC;
     m_renderer = SDL_CreateRenderer(m_window, -1, renderer_flags);
-    if (m_renderer == NULL)
-    {
+    if (m_renderer == NULL) {
         std::cerr << "Couldn't create renderer: " << SDL_GetError() << std::endl;
         return 1;
     }
@@ -161,8 +151,7 @@ int Game::setup()
     return 0;
 }
 
-void Game::update()
-{
+void Game::update() {
     // Calculate and correct fps
     m_avg_fps = 0;
     m_last_update_ms = m_fps_timer.getTicks();
@@ -192,10 +181,8 @@ void Game::update()
     SDL_RenderPresent(m_renderer);
 }
 
-int Game::loop()
-{
-    if (!m_inited)
-    {
+int Game::loop() {
+    if (!m_inited) {
         std::cerr << "Can't run game loop: SDL not inited" << std::endl;
         return 1;
     }
@@ -205,21 +192,16 @@ int Game::loop()
     SDL_Event e;
 
     // While the game is running
-    while (!quit)
-    {
+    while (!quit) {
         // Start framerate cap timer
         m_fps_cap_timer.start();
 
         // Handle events in the event queue
-        while (SDL_PollEvent(&e))
-        {
+        while (SDL_PollEvent(&e)) {
             // User asks to quit
-            if (e.type == SDL_QUIT)
-            {
+            if (e.type == SDL_QUIT) {
                 quit = true;
-            }
-            else
-            {
+            } else {
                 // Handle player events
                 for (int i = 0; i < m_sprite_list.size(); ++i) {
                     m_sprite_list[i]->handleEvent(e);

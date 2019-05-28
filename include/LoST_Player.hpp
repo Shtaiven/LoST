@@ -31,7 +31,9 @@ public:
         addFrame(LoST_ASSETS_PLAYER_JUMP_FRAME5);
         addFrame(LoST_ASSETS_PLAYER_JUMP_FRAME6);
         addFrame(LoST_ASSETS_PLAYER_JUMP_FRAME7);
-        setSpeed(1.0/7.5);
+        // setSpeed(1.0/7.5);
+        setSpeed(1);
+        setFrameRate(10);
         LoST_SET_ANIMATION(PLAYER, IDLE);
     }
 
@@ -43,6 +45,7 @@ public:
         bool is_running = LoST_IS_WITHIN_ANIMATION(PLAYER, RUN);
         bool is_crouching = LoST_IS_WITHIN_ANIMATION(PLAYER, CROUCH);
         bool is_idle = LoST_IS_WITHIN_ANIMATION(PLAYER, IDLE);
+        adjustTimeElapsed(ms);
 
         // Handle keyboard state
         if (!(current_key_states[SDL_SCANCODE_LEFT]  ||
