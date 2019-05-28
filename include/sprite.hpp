@@ -107,6 +107,8 @@ class AnimatedSprite : virtual public Sprite {
         bool m_loop = false;
         int m_frame_delay = 0;
         int m_frames_skipped = 0;
+        int m_framerate = 0;  // in frames/second
+        unsigned int m_time_elapsed_s = 0;
         void updateAnimationLen();
         size_t nextFrameIndex();
 
