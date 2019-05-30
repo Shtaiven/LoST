@@ -265,8 +265,8 @@ size_t AnimatedSprite::nextFrameIndex() {
             next_frame_index = calculateNextFrame();
         }
     } else if (m_frame_rate > 0) {  // use positive framerate method
-        int ms_per_frame = 1.0 / m_frame_rate * 1000.0 / getSpeed();
-        if (m_animation_len > 1 && m_time_elapsed_ms >= ms_per_frame) {
+        int ms_per_frame = (int)(1.0 / m_frame_rate * 1000.0 / getSpeed());
+        if (m_animation_len > 1 && (size_t) m_time_elapsed_ms >= ms_per_frame) {
             int n_frames = m_time_elapsed_ms / ms_per_frame; // number of frames ahead to calculate in case of skipped frames
             m_time_elapsed_ms %= ms_per_frame;
             // printf("ms_per_frame: %d, n_frames: %d, m_time_elapsed_ms: %d\n", ms_per_frame, n_frames, m_time_elapsed_ms);

@@ -38,13 +38,17 @@ public:
     }
 
     void handleState(Uint32 ms=0) {
+        m_time_delta = ms;
         if (!isLoaded()) return;
         const Uint8* current_key_states = SDL_GetKeyboardState(NULL);
         SDL_Point prev_pos = { m_render_rect.x, m_render_rect.y };
+        int max_w, max_h;
+        SDL_GetRendererOutputSize(m_renderer, &max_w, &max_h);
         bool is_jumping = LoST_IS_WITHIN_ANIMATION(PLAYER, JUMP) && (getCurrentFrameIndex() != LoST_ASSETS_PLAYER_JUMP_END_INDEX);
         bool is_running = LoST_IS_WITHIN_ANIMATION(PLAYER, RUN);
         bool is_crouching = LoST_IS_WITHIN_ANIMATION(PLAYER, CROUCH);
         bool is_idle = LoST_IS_WITHIN_ANIMATION(PLAYER, IDLE);
+        bool is_grounded = (m_render_rect.y == max_h - m_collision_rect.h - m_collision_rect.y);
         adjustTimeElapsed(ms);
 
         // Handle keyboard state
@@ -68,33 +72,43 @@ public:
             if (current_key_states[SDL_SCANCODE_RIGHT]) {
                 moveRight();
             }
-            if (current_key_states[SDL_SCANCODE_UP] && !is_jumping) {
+            if (current_key_states[SDL_SCANCODE_UP] && !is_jumping && is_grounded) {
                 LoST_SET_ANIMATION(PLAYER, JUMP);
             }
         }
 
         // Checking if we should update sprite animation
+        // Has our x position changed?
+        if (m_render_rect.x > prev_pos.x && getFlip() != SDL_FLIP_NONE) {
+            setFlip(SDL_FLIP_NONE);
+        } else if (m_render_rect.x < prev_pos.x && getFlip() != SDL_FLIP_HORIZONTAL) {
+            setFlip(SDL_FLIP_HORIZONTAL);
+        }
+
         // Are we currently jumping? If so, stay in jump animation
         if (!is_jumping) {
-            // Has our x position changed?
-            if (m_render_rect.x > prev_pos.x && getFlip() != SDL_FLIP_NONE) {
-                setFlip(SDL_FLIP_NONE);
-            } else if (m_render_rect.x < prev_pos.x && getFlip() != SDL_FLIP_HORIZONTAL) {
-                setFlip(SDL_FLIP_HORIZONTAL);
-            }
-
             // Are we already in the running animation
             if (!is_running && prev_pos.x != m_render_rect.x) {
                 LoST_SET_ANIMATION(PLAYER, RUN);
             }
+        } else {
+            size_t num_frames = getEndFrameIndex()-getStartFrameIndex();
+            size_t mid_frame_index = getEndFrameIndex()-(num_frames/2);
+            bool should_jump = getCurrentFrameIndex() < mid_frame_index;
+            jump(should_jump);
         }
+
+        gravity();
     }
 
 private:
-    int m_speed = 10;
+    double m_speed = 1000;
+    double m_gravity = m_speed/2;
+    double m_jump_speed = (2*m_speed + m_gravity)/3;
+    Uint32 m_time_delta = 0;
 
     void moveLeft() {
-        m_render_rect.x -= m_speed;
+        m_render_rect.x -= (int)(m_speed*m_time_delta/1000.0);
         if (m_render_rect.x < -m_collision_rect.x) {
             m_render_rect.x = -m_collision_rect.x;
         }
@@ -104,9 +118,24 @@ private:
         int max_w, max_h;
         SDL_GetRendererOutputSize(m_renderer, &max_w, &max_h);
 
-        m_render_rect.x += m_speed;
+        m_render_rect.x += (int)(m_speed*m_time_delta/1000.0);
         if (m_render_rect.x + m_collision_rect.x + m_collision_rect.w > max_w) {
             m_render_rect.x = max_w - m_collision_rect.w - m_collision_rect.x;
+        }
+    }
+
+    void jump(bool rising) {
+        if (rising) {
+            m_render_rect.y -= (int)(m_jump_speed*m_time_delta/1000.0);
+        }
+    }
+
+    void gravity() {
+        int max_w, max_h;
+        SDL_GetRendererOutputSize(m_renderer, &max_w, &max_h);
+        m_render_rect.y += (int)(m_gravity*m_time_delta/1000.0);
+        if (m_render_rect.y + m_collision_rect.y + m_collision_rect.h > max_h) {
+            m_render_rect.y = max_h - m_collision_rect.h - m_collision_rect.y;
         }
     }
 };
