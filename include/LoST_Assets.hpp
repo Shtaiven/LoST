@@ -22,12 +22,18 @@
 #define LoST_ASSETS_FONT_GAME_POINT 24
 
 // Define a macro for easy animation setting within an AnimatedSprite
-#define LoST_SET_ANIMATION(_anim) do { \
-    setStartFrameIndex(LoST_ASSETS_PLAYER_ ## _anim ## _START_INDEX); \
-    setEndFrameIndex(LoST_ASSETS_PLAYER_ ## _anim ## _END_INDEX); \
-    setCurrentFrameIndex(LoST_ASSETS_PLAYER_ ## _anim ## _START_INDEX); \
-    loop(LoST_ASSETS_PLAYER_ ## _anim ## _LOOPS); \
+#define LoST_SET_ANIMATION(_sprite_name, _animation) do { \
+    setStartFrameIndex(LoST_ASSETS_ ## _sprite_name ## _ ## _animation ## _START_INDEX); \
+    setEndFrameIndex(LoST_ASSETS_ ## _sprite_name ## _ ## _animation ## _END_INDEX); \
+    setCurrentFrameIndex(LoST_ASSETS_ ## _sprite_name ## _ ## _animation ## _START_INDEX); \
+    loop(LoST_ASSETS_ ## _sprite_name ## _ ## _animation ## _LOOPS); \
 } while(0)
+
+// Define a macro that returns true if we are within the animation given
+#define LoST_IS_WITHIN_ANIMATION(_sprite_name, _animation) \
+((bool)(getCurrentFrameIndex() >= LoST_ASSETS_ ## _sprite_name ## _ ## _animation ## _START_INDEX && \
+        getCurrentFrameIndex() <= LoST_ASSETS_ ## _sprite_name ## _ ## _animation ## _END_INDEX) \
+)
 
 // Define player
 #define LoST_ASSETS_PLAYER LoST_ASSETS_DIR "adventurer-spritesheet.png"

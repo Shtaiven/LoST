@@ -23,6 +23,9 @@ class Sprite {
         bool loadText(TTF_Font* font, SDL_Renderer* renderer, std::string text, const SDL_Color& color={0,0,0,0xFF}, const SDL_Point& pos={0,0});
         void getRenderRect(SDL_Rect* render_rect);
         void setRenderRect(const SDL_Rect* render_rect);
+        void getCollisionRect(SDL_Rect* collision_rect);
+        void setCollisionRect(const SDL_Rect* collision_rect);
+        bool hasCollision();
         void setCenter(SDL_Point* center);
         int getX();
         void setX(int x);
@@ -46,6 +49,8 @@ class Sprite {
         virtual int render();
         virtual int render(int x, int y);
         virtual void handleEvent(const SDL_Event& e) {}
+        virtual void handleState(Uint32 ms=0) {}
+        static bool checkCollision(Sprite* a, Sprite* b);
 
     protected:
         void loadTextureFromSurface(SDL_Surface* surface, SDL_Renderer* renderer, const SDL_Rect* render_rect);
@@ -53,10 +58,12 @@ class Sprite {
         SDL_Texture* m_texture = NULL;
         SDL_Renderer* m_renderer = NULL;
         SDL_Rect m_render_rect = {0};
+        SDL_Rect m_collision_rect = {0};
         SDL_Rect* m_clip = NULL;
         SDL_Point* m_center = NULL;
         Uint8 m_flip = SDL_FLIP_NONE;
         double m_rotation = 0.0;
+        bool m_collision_debug = true;
 };
 
 
@@ -82,6 +89,9 @@ class AnimatedSprite : virtual public Sprite {
         void setSpeed(double speed=1.0);
         int getFrameDelay();
         void setFrameDelay(int delay=0);
+        int getFrameRate();
+        void setFrameRate(int frames_per_second);
+        void adjustTimeElapsed(int ms);
 
         // Index manipulation
         size_t getCurrentFrameIndex();
@@ -100,7 +110,10 @@ class AnimatedSprite : virtual public Sprite {
         bool m_loop = false;
         int m_frame_delay = 0;
         int m_frames_skipped = 0;
+        int m_frame_rate = 0;  // in frames/second
+        unsigned int m_time_elapsed_ms = 0;
         void updateAnimationLen();
+        size_t calculateNextFrame();
         size_t nextFrameIndex();
 
 };

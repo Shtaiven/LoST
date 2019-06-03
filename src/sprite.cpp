@@ -30,7 +30,7 @@ void Sprite::loadTextureFromSurface(SDL_Surface* surface, SDL_Renderer* renderer
     }
 
     // Save info for later use during rendering
-    if (render_rect) setRenderRect(render_rect);
+    setRenderRect(render_rect);
     m_renderer = renderer;
 }
 
@@ -74,7 +74,18 @@ bool Sprite::loadText(TTF_Font* font, SDL_Renderer* renderer, std::string text, 
 
 // Render the sprite
 int Sprite::render() {
-    return SDL_RenderCopyEx(m_renderer, m_texture, m_clip, &m_render_rect, m_rotation, m_center, (SDL_RendererFlip) m_flip);
+    int ret = SDL_RenderCopyEx(m_renderer, m_texture, m_clip, &m_render_rect, m_rotation, m_center, (SDL_RendererFlip) m_flip);
+    if (m_collision_debug && hasCollision()) {
+        SDL_Rect displaced_collision_rect = {
+            m_render_rect.x + m_collision_rect.x,
+            m_render_rect.y + m_collision_rect.y,
+            m_collision_rect.w,
+            m_collision_rect.h
+        };
+        SDL_SetRenderDrawColor(m_renderer, 255, 0, 0, 255);
+        SDL_RenderDrawRect(m_renderer, &displaced_collision_rect);
+    }
+    return ret;
 }
 
 // Render the sprite to a specific location
@@ -89,6 +100,14 @@ void Sprite::getRenderRect(SDL_Rect* render_rect) {
 
 void Sprite::setRenderRect(const SDL_Rect* render_rect) {
     if (render_rect) memcpy(&m_render_rect, render_rect, sizeof(SDL_Rect));
+}
+
+void Sprite::getCollisionRect(SDL_Rect* collision_rect) {
+    if (collision_rect) memcpy(collision_rect, &m_collision_rect, sizeof(SDL_Rect));
+}
+
+void Sprite::setCollisionRect(const SDL_Rect* collision_rect) {
+    if (collision_rect) memcpy(&m_collision_rect, collision_rect, sizeof(SDL_Rect));
 }
 
 void Sprite::setCenter(SDL_Point* center) {
@@ -174,6 +193,43 @@ bool Sprite::isLoaded() {
     return !!m_texture;
 }
 
+bool Sprite::hasCollision() {
+    return (m_collision_rect.w || m_collision_rect.h);
+}
+
+bool Sprite::checkCollision(Sprite* a, Sprite* b) {
+    // TODO: Be able to check combinations of multiple circular or rectangular colliders
+    // If a or b has no dimension, return false
+    if (!a->hasCollision() || !b->hasCollision())
+    {
+        return false;
+    }
+
+    // The sides of the rectangles
+    int left_a, left_b;
+    int right_a, right_b;
+    int top_a, top_b;
+    int bottom_a, bottom_b;
+
+    // Calculate the sides of rect A
+    left_a = a->m_collision_rect.x + a->m_render_rect.x;
+    right_a = left_a + a->m_collision_rect.w;
+    top_a = a->m_collision_rect.y + a->m_render_rect.y;
+    bottom_a = top_a + a->m_collision_rect.h;
+
+    // Calculate the sides of rect B
+    left_b = b->m_collision_rect.x + b->m_render_rect.x;
+    right_b = left_b + b->m_collision_rect.w;
+    top_b = b->m_collision_rect.y + b->m_render_rect.y;
+    bottom_b = top_b + b->m_collision_rect.h;
+
+    // If any of the sides from A are within B, return true
+    return !(bottom_a <= top_b ||
+             top_a >= bottom_b ||
+             right_a <= left_b ||
+             left_a >= right_b);
+}
+
 
 /* AnimatedSprite class methods *********************************************/
 AnimatedSprite::~AnimatedSprite() {
@@ -187,19 +243,37 @@ void AnimatedSprite::updateAnimationLen() {
     }
 }
 
-size_t AnimatedSprite::nextFrameIndex() {
-    size_t next_frame_index = m_current_frame_index;
+size_t AnimatedSprite::calculateNextFrame() {
+    size_t next_frame_diff = m_current_frame_index - m_start_frame_index + 1;
 
-    if (m_frame_delay >= 1) {
-        ++m_frames_skipped %= m_frame_delay;
+    // If we haven't reached the end of the animation or we are looping, calculate the next frame
+    if ((m_animation_len - next_frame_diff) || m_loop) {
+        return next_frame_diff%m_animation_len + m_start_frame_index;
     }
 
-    if (m_animation_len > 1 && !m_frames_skipped && m_frame_delay >= 0) {
-        size_t next_frame_diff = m_current_frame_index - m_start_frame_index + 1;
+    return m_current_frame_index;
+}
 
-        // If we haven't reached the end of the animation or we are looping, calculate the next frame
-        if ((m_animation_len - next_frame_diff) || m_loop) {
-            next_frame_index = next_frame_diff%m_animation_len + m_start_frame_index;
+size_t AnimatedSprite::nextFrameIndex() {
+    size_t next_frame_index = m_current_frame_index;
+    if (!m_frame_rate) {  // use undefined framerate method
+        if (m_frame_delay >= 1) {
+            ++m_frames_skipped %= m_frame_delay;
+        }
+
+        if (m_animation_len > 1 && !m_frames_skipped && m_frame_delay >= 0) {
+            next_frame_index = calculateNextFrame();
+        }
+    } else if (m_frame_rate > 0) {  // use positive framerate method
+        int ms_per_frame = (int)(1.0 / m_frame_rate * 1000.0 / getSpeed());
+        if (m_animation_len > 1 && (size_t) m_time_elapsed_ms >= ms_per_frame) {
+            int n_frames = m_time_elapsed_ms / ms_per_frame; // number of frames ahead to calculate in case of skipped frames
+            m_time_elapsed_ms %= ms_per_frame;
+            // printf("ms_per_frame: %d, n_frames: %d, m_time_elapsed_ms: %d\n", ms_per_frame, n_frames, m_time_elapsed_ms);
+            int i;
+            for (i = 0; i < n_frames; ++i) {
+                next_frame_index = calculateNextFrame();
+            }
         }
     }
     return next_frame_index;
@@ -209,9 +283,7 @@ int AnimatedSprite::render() {
     if (m_current_frame_index >= numFrames()) return -1;
     clip(&m_frames[m_current_frame_index]);
     int result = Sprite::render();
-    if (m_frame_delay >= 0) {
-        m_current_frame_index = nextFrameIndex();
-    }
+    m_current_frame_index = nextFrameIndex();
     return result;
 }
 
@@ -313,4 +385,16 @@ int AnimatedSprite::getFrameDelay() {
 void AnimatedSprite::setFrameDelay(int delay) {
     m_frame_delay = std::max(delay, -1);
     m_frames_skipped = 0;
+}
+
+int AnimatedSprite::getFrameRate() {
+    return m_frame_rate;
+}
+
+void AnimatedSprite::setFrameRate(int frames_per_second) {
+    m_frame_rate = frames_per_second;
+}
+
+void AnimatedSprite::adjustTimeElapsed(int ms) {
+    m_time_elapsed_ms += ms;
 }
