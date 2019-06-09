@@ -64,6 +64,10 @@ void Game::close() {
     SDL_Quit();
 }
 
+void Game::init(init_t config) {
+    m_config = config;
+}
+
 void Game::loadFPSDisplay(double fps) {
     m_fps_string.str("");
     m_fps_string << fps;

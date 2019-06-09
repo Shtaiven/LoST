@@ -6,11 +6,11 @@
 
 // Define directories
 #ifdef _WIN32
-    #define LoST_ROOT_DIR "../../"
+    #define LoST_ROOT_DIR "../../../"
 #else
-    #define LoST_ROOT_DIR "../"
+    #define LoST_ROOT_DIR "../../"
 #endif // _WIN32
-#define LoST_ASSETS_DIR LoST_ROOT_DIR "assets/"
+#define LoST_ASSETS_DIR LoST_ROOT_DIR "LoST/assets/"
 
 // Define icon
 #define LoST_ASSETS_ICON LoST_ASSETS_DIR "icon.png"
