@@ -1,15 +1,15 @@
-#ifndef GAME_HPP__
-#define GAME_HPP__
+#ifndef LOST_GAME_HPP__
+#define LOST_GAME_HPP__
 
 #include <string>
 #include <sstream>
 #include <vector>
 #include "SDL.h"
 #include "SDL_ttf.h"
-#include "sprite.hpp"
-#include "timer.hpp"
+#include "LGE.hpp"
 #include "LoST.hpp"
 
+namespace LoST {
 
 // Game class creates SDL game window and listens to events
 class Game {
@@ -42,23 +42,24 @@ class Game {
         // Game information and display
         std::string m_title;
         TTF_Font* m_font = NULL;
-        std::vector<Sprite*> m_sprite_list;
+        std::vector<LGE::Sprite*> m_sprite_list;
 
         // Framerate
         init_t m_config;
         bool m_vsync_enabled = true;
         Uint32 m_fps_cap = 0;
         double m_ms_per_frame = 0;
-        Timer m_fps_cap_timer;
+        LGE::Timer m_fps_cap_timer;
         Uint32 m_counted_frames;
         Uint32 m_last_update_ms;
         double m_avg_fps;
-        Timer m_fps_timer;
-        Sprite* m_fps_sprite = NULL;
+        LGE::Timer m_fps_timer;
+        LGE::Sprite* m_fps_sprite = NULL;
         std::stringstream m_fps_string;
         bool m_display_fps = true;
         void loadFPSDisplay(double fps);
 };
 
+}
 
-#endif // GAME_HPP__
+#endif // LOST_GAME_HPP__

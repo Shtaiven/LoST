@@ -1,7 +1,7 @@
-#include "timer.hpp"
+#include "LGE_timer.hpp"
 
 
-Timer::Timer() {
+LGE::Timer::Timer() {
     //Initialize the variables
     m_start_ticks = 0;
     m_paused_ticks = 0;
@@ -9,7 +9,7 @@ Timer::Timer() {
     m_started = false;
 }
 
-void Timer::start() {
+void LGE::Timer::start() {
     //Start the timer
     m_started = true;
     
@@ -21,7 +21,7 @@ void Timer::start() {
     m_paused_ticks = 0;
 }
 
-void Timer::stop() {
+void LGE::Timer::stop() {
     //Stop the timer
     m_started = false;
     
@@ -33,7 +33,7 @@ void Timer::stop() {
     m_paused_ticks = 0;
 }
 
-void Timer::unpause() {
+void LGE::Timer::unpause() {
     //If the timer is running and paused
     if(m_started && m_paused) {
         //Unpause the timer
@@ -47,7 +47,7 @@ void Timer::unpause() {
     }
 }
 
-Uint32 Timer::getTicks() {
+Uint32 LGE::Timer::getTicks() {
     //The actual timer time
     Uint32 ticks = 0;
     
@@ -66,12 +66,12 @@ Uint32 Timer::getTicks() {
     return ticks;
 }
 
-bool Timer::isStarted() {
+bool LGE::Timer::isStarted() {
     //Timer is running and paused or unpaused
     return m_started;
 }
 
-bool Timer::isPaused() {
+bool LGE::Timer::isPaused() {
     //Timer is running and paused return
     return m_paused && m_started;
 }
