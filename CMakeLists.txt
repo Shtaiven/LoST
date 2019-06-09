@@ -11,9 +11,9 @@ add_subdirectory(LoST)
 if(WIN32)
     file(GLOB DLL_PATHS "${SDL2_DIR}/${VC_LIB_PATH_SUFFIX}/*.dll")
     foreach(DLL_PATH IN ITEMS ${DLL_PATHS})
-        add_custom_command(TARGET LoST_EXE POST_BUILD       # Adds a post-build event to target
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different       # which executes "cmake - E copy_if_different..."
-            ${DLL_PATH}                                     # <--this is in-file
-            $<TARGET_FILE_DIR:LoST>)                        # <--this is out-file path
+        add_custom_command(TARGET ${CMAKE_PROJECT_NAME} POST_BUILD  # Adds a post-build event to target
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different               # which executes "cmake - E copy_if_different..."
+            ${DLL_PATH}                                             # <--this is in-file
+            $<TARGET_FILE_DIR:${CMAKE_PROJECT_NAME}>)               # <--this is out-file path
     endforeach(DLL_PATH)
 endif()
