@@ -6,7 +6,7 @@ project(LoST)
 set(SDL2_DIR "${CMAKE_SOURCE_DIR}/SDL2")
 
 add_subdirectory(LGE)
-add_subdirectory(LoST)
+add_subdirectory(${CMAKE_PROJECT_NAME})
 
 if(WIN32)
     file(GLOB DLL_PATHS "${SDL2_DIR}/${VC_LIB_PATH_SUFFIX}/*.dll")
