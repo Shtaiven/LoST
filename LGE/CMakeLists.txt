@@ -12,9 +12,9 @@ include_directories("${CMAKE_CURRENT_LIST_DIR}"
                     "${SDL2_TTF_INCLUDE_DIRS}")
 
 file(GLOB_RECURSE LGE_SOURCES *.cpp *.c)
-add_library(LGE_LIB ${LGE_SOURCES})
-target_link_libraries(LGE_LIB ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES} ${SDL2_TTF_LIBRARIES})
-target_include_directories(LGE_LIB PUBLIC
+add_library(LGE ${LGE_SOURCES})
+target_link_libraries(LGE ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES} ${SDL2_TTF_LIBRARIES})
+target_include_directories(LGE PUBLIC
                            "${CMAKE_CURRENT_LIST_DIR}/include"
                            "${SDL2_INCLUDE_DIRS}"
                            "${SDL2_IMAGE_INCLUDE_DIRS}"

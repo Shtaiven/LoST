@@ -5,15 +5,8 @@ project(LoST)
 # Must be set to find SDL2 on Windows
 set(SDL2_DIR "${CMAKE_SOURCE_DIR}/SDL2")
 
+# Must be set to copy DLLs to build directory
+set(COPY_DLLS TRUE)
+
 add_subdirectory(LGE)
 add_subdirectory(${CMAKE_PROJECT_NAME})
-
-if(WIN32)
-    file(GLOB DLL_PATHS "${SDL2_DIR}/${VC_LIB_PATH_SUFFIX}/*.dll")
-    foreach(DLL_PATH IN ITEMS ${DLL_PATHS})
-        add_custom_command(TARGET ${CMAKE_PROJECT_NAME} POST_BUILD  # Adds a post-build event to target
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different               # which executes "cmake - E copy_if_different..."
-            ${DLL_PATH}                                             # <--this is in-file
-            $<TARGET_FILE_DIR:${CMAKE_PROJECT_NAME}>)               # <--this is out-file path
-    endforeach(DLL_PATH)
-endif()
