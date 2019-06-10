@@ -32,7 +32,7 @@ int LoST::Game::run() {
     LGE::Engine engine(window_title.str(), SCREEN_WIDTH, SCREEN_HEIGHT);
     engine.init();
 
-    // TODO: Reintroduce the sprites back into the game
+    // TODO: Remove the need to use SDL directly
     // Create a title
     TTF_Font* title_font = TTF_OpenFont(LoST_ASSETS_FONT_TITLE, LoST_ASSETS_FONT_TITLE_POINT);
     LGE::Sprite* title_sprite = new LGE::Sprite();
@@ -41,7 +41,6 @@ int LoST::Game::run() {
     double title_scale = engine.getHeight()*0.001;
     title_sprite->setSize((int)(title_sprite->getWidth()*title_scale), (int)(title_sprite->getHeight()*title_scale));
     title_sprite->setPosition((int)((engine.getWidth() - title_sprite->getWidth())/2), (int)(engine.getHeight()*0.1));
-
 
     // Create a character sprite
     LoST::Player* player_sprite = new LoST::Player();
