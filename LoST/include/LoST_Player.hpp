@@ -2,6 +2,7 @@
 #define LOST_PLAYER_HPP__
 
 #include "LGE_sprite.hpp"
+#include "LoST_assets.hpp"
 
 namespace LoST {
 
