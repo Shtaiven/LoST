@@ -16,7 +16,7 @@
 #endif // _WIN32
 #define LGE_ASSETS_DIR LGE_ROOT_DIR "LGE/assets/"
 #define LGE_FONT_DEFAULT LGE_ASSETS_DIR "Roboto-Regular.ttf"
-#define LGE_FONT_POINT_DEFAULT 48
+#define LGE_FONT_POINT_DEFAULT 96
 
 namespace LGE {
 
@@ -29,7 +29,7 @@ public:
     } init_t;
     Engine(std::string title="Untitled", int width=640, int height=480);
     ~Engine();
-    void init(init_t config);
+    int init(init_t config={0, 0});
     int setup();
     int loop();
     int run();
@@ -37,9 +37,11 @@ public:
     void update();
     void capFPS(Uint32 fps);
     void enableVsync(bool enable);
-    void addToSpriteList(LGE::Sprite *p_sprite);
+    void addSprite(LGE::Sprite *p_sprite);
     int getWidth();
     int getHeight();
+    std::string getTitle();
+    SDL_Renderer* getRenderer();
     void setFont(char *ttf_file, int ptsize);
 
 

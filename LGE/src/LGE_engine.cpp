@@ -64,23 +64,8 @@ void LGE::Engine::close() {
     SDL_Quit();
 }
 
-void LGE::Engine::init(init_t config) {
+int LGE::Engine::init(init_t config) {
     m_config = config;
-}
-
-void LGE::Engine::loadFPSDisplay(double fps) {
-    m_fps_string.str("");
-    m_fps_string << fps;
-
-    SDL_Color fps_color = { 0x00, 0xFF, 0x00, 0xFF };
-    if (!m_fps_sprite->loadText(m_font, m_renderer, m_fps_string.str().c_str(), fps_color)) return;
-    double fps_scale = m_height*0.0005;
-    m_fps_sprite->setSize((int)(m_fps_sprite->getWidth()*fps_scale), (int)(m_fps_sprite->getHeight()*fps_scale));
-    m_fps_sprite->setPosition(5, 5);
-}
-
-int LGE::Engine::setup() {
-    int ret = 0;
 
     m_window = SDL_CreateWindow(m_title.c_str(),
                                 SDL_WINDOWPOS_UNDEFINED,
@@ -103,6 +88,23 @@ int LGE::Engine::setup() {
         return 1;
     }
     std::cout << "Created renderer" << std::endl;
+
+    return 0;
+}
+
+void LGE::Engine::loadFPSDisplay(double fps) {
+    m_fps_string.str("");
+    m_fps_string << fps;
+
+    SDL_Color fps_color = { 0x00, 0xFF, 0x00, 0xFF };
+    if (!m_fps_sprite->loadText(m_font, m_renderer, m_fps_string.str().c_str(), fps_color)) return;
+    double fps_scale = m_height*0.0005;
+    m_fps_sprite->setSize((int)(m_fps_sprite->getWidth()*fps_scale), (int)(m_fps_sprite->getHeight()*fps_scale));
+    m_fps_sprite->setPosition(5, 5);
+}
+
+int LGE::Engine::setup() {
+    int ret = 0;
 
     // Due to a bug up to SDL 2.0.9 on macOS 10.14, VSYNC doesn't work, so enable frame cap instead
     #ifdef __APPLE__
@@ -246,7 +248,7 @@ void LGE::Engine::enableVsync(bool enable) {
     SDL_SetHint(SDL_HINT_RENDER_VSYNC, (enable ? "1" : "0"));
 }
 
-void LGE::Engine::addToSpriteList(LGE::Sprite *p_sprite) {
+void LGE::Engine::addSprite(LGE::Sprite *p_sprite) {
     m_sprite_list.push_back(p_sprite);
 }
 
@@ -256,6 +258,14 @@ int LGE::Engine::getWidth() {
 
 int LGE::Engine::getHeight() {
     return m_height;
+}
+
+std::string LGE::Engine::getTitle() {
+    return m_title;
+}
+
+SDL_Renderer* LGE::Engine::getRenderer() {
+    return m_renderer;
 }
 
 void LGE::Engine::setFont(char *ttf_file, int ptsize) {
