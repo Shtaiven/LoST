@@ -268,7 +268,7 @@ SDL_Renderer* LGE::Engine::getRenderer() {
     return m_renderer;
 }
 
-void LGE::Engine::setFont(char *ttf_file, int ptsize) {
+void LGE::Engine::setFont(std::string ttf_file, int ptsize) {
     if (m_font) TTF_CloseFont(m_font);
-    m_font = TTF_OpenFont(ttf_file, ptsize);
+    m_font = TTF_OpenFont(ttf_file.c_str(), ptsize);
 }

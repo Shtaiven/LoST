@@ -42,7 +42,7 @@ public:
     int getHeight();
     std::string getTitle();
     SDL_Renderer* getRenderer();
-    void setFont(char *ttf_file, int ptsize);
+    void setFont(std::string ttf_file, int ptsize);
 
 
 private:
