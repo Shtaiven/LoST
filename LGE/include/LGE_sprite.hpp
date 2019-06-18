@@ -10,11 +10,10 @@
 #include "SDL_ttf.h"
 
 
-#define ASSIGN_SDL_RECT(_rect, _x, _y, _w, _h) do { \
-    (_rect).x=_x; (_rect).y=_y; (_rect).w=_w; (_rect.h)=_h; \
-} while(0)
-
 namespace LGE {
+
+typedef void (* SpriteEventHandler)(const SDL_Event&);
+typedef void (*SpriteStateHandler)(Uint32 ms);
 
 // Sprite class manages sprites (character, enemies, etc)
 class Sprite {
@@ -50,8 +49,12 @@ public:
     void clip(SDL_Rect* clip);
     virtual int render();
     virtual int render(int x, int y);
-    virtual void handleEvent(const SDL_Event& e) {}
-    virtual void handleState(Uint32 ms=0) {}
+    void addEventHandler(SpriteEventHandler handler);
+    void removeEventHandler(SpriteEventHandler handler);
+    virtual void handleEvent(const SDL_Event& e);
+    void addStateHandler(SpriteStateHandler handler);
+    void removeStateHandler(SpriteStateHandler handler);
+    virtual void handleState(Uint32 ms=0);
     static bool checkCollision(Sprite* a, Sprite* b);
 
 protected:
@@ -66,11 +69,13 @@ protected:
     Uint8 m_flip = SDL_FLIP_NONE;
     double m_rotation = 0.0;
     bool m_collision_debug = true;
+    std::vector<SpriteEventHandler> m_event_handlers;
+    std::vector<SpriteStateHandler> m_state_handlers;
 };
 
 
 // AnimatedSprite class allows adding animations through the use of a spritesheet
-class AnimatedSprite : virtual public Sprite {
+class AnimatedSprite : public Sprite {
 public:
     virtual ~AnimatedSprite();
 

@@ -1,16 +1,17 @@
 #ifndef LOST_PLAYER_HPP__
 #define LOST_PLAYER_HPP__
 
-#include "LGE_sprite.hpp"
+#include "LGE.hpp"
 #include "LoST_assets.hpp"
 
 namespace LoST {
 
+// TODO: Create a special class that contains an animated sprite
 class Player : public LGE::AnimatedSprite {
 public:
     Player() {
-        ASSIGN_SDL_RECT(m_render_rect, 0, 0, LoST_ASSETS_PLAYER_FRAME_WIDTH, LoST_ASSETS_PLAYER_FRAME_HEIGHT);
-        ASSIGN_SDL_RECT(m_collision_rect, 16, 7, 17, 29);
+        LGE_RECT_ASSIGN(m_render_rect, 0, 0, LoST_ASSETS_PLAYER_FRAME_WIDTH, LoST_ASSETS_PLAYER_FRAME_HEIGHT);
+        LGE_RECT_ASSIGN(m_collision_rect, 16, 7, 17, 29);
         addFrame(LoST_ASSETS_PLAYER_IDLE_FRAME0);
         addFrame(LoST_ASSETS_PLAYER_IDLE_FRAME1);
         addFrame(LoST_ASSETS_PLAYER_IDLE_FRAME2);

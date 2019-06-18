@@ -1,6 +1,7 @@
 #include <algorithm>
 #include "SDL_image.h"
 #include "SDL_ttf.h"
+#include "LGE_util.hpp"
 #include "LGE_sprite.hpp"
 
 
@@ -64,7 +65,7 @@ bool LGE::Sprite::loadText(TTF_Font* font, SDL_Renderer* renderer, std::string t
     }
 
     SDL_Rect render_rect = {0};
-    if (temp_surface) ASSIGN_SDL_RECT(render_rect, pos.x, pos.y, temp_surface->w, temp_surface->h);
+    if (temp_surface) LGE_RECT_ASSIGN(render_rect, pos.x, pos.y, temp_surface->w, temp_surface->h);
     loadTextureFromSurface(temp_surface, renderer, &render_rect);
 
     // Free memory of temp_surface
@@ -229,6 +230,46 @@ bool LGE::Sprite::checkCollision(Sprite* a, Sprite* b) {
              top_a >= bottom_b ||
              right_a <= left_b ||
              left_a >= right_b);
+}
+
+void LGE::Sprite::addEventHandler(SpriteEventHandler handler) {
+    m_event_handlers.push_back(handler);
+}
+
+void LGE::Sprite::removeEventHandler(SpriteEventHandler handler) {
+    int h;
+    for (h=0; h < m_event_handlers.size(); ++h) {
+        if (m_event_handlers[h] == handler) {
+            m_event_handlers.erase(m_event_handlers.begin()+h);
+        }
+    }
+}
+
+void LGE::Sprite::handleEvent(const SDL_Event& e) {
+    int h;
+    for (h=0; h < m_event_handlers.size(); ++h) {
+        m_event_handlers[h](e);
+    }
+}
+
+void LGE::Sprite::addStateHandler(SpriteStateHandler handler) {
+    m_state_handlers.push_back(handler);
+}
+
+void LGE::Sprite::removeStateHandler(SpriteStateHandler handler) {
+    int h;
+    for (h=0; h < m_state_handlers.size(); ++h) {
+        if (m_state_handlers[h] == handler) {
+            m_state_handlers.erase(m_state_handlers.begin()+h);
+        }
+    }
+}
+
+void LGE::Sprite::handleState(Uint32 ms) {
+    int h;
+    for (h=0; h < m_state_handlers.size(); ++h) {
+        m_state_handlers[h](ms);
+    }
 }
 
 
