@@ -15,7 +15,8 @@
     #define LGE_ROOT_DIR "../../"
 #endif // _WIN32
 #define LGE_ASSETS_DIR LGE_ROOT_DIR "LGE/assets/"
-#define LGE_FONT_DEFAULT LGE_ASSETS_DIR "Roboto-Regular.ttf"
+#define LGE_FONT_DIR LGE_ASSETS_DIR "fonts/"
+#define LGE_FONT_DEFAULT LGE_FONT_DIR "Open_Sans/OpenSans-Regular.ttf"
 #define LGE_FONT_POINT_DEFAULT 96
 
 namespace LGE {
