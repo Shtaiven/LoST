@@ -23,14 +23,14 @@ namespace LGE {
 
 class Engine {
 public:
-    typedef int (*init_func_t)();
-    typedef struct init_t {
-        init_func_t setup;
-        init_func_t loop;
-    } init_t;
+    typedef int (*InitFunc)();
+    typedef struct Init {
+        InitFunc setup;
+        InitFunc loop;
+    } Init;
     Engine(std::string title="Untitled", int width=640, int height=480);
     ~Engine();
-    int init(init_t config={0, 0});
+    int init(Init config={0, 0});
     int setup();
     int loop();
     int run();
@@ -61,7 +61,7 @@ private:
     std::vector<LGE::Sprite*> m_sprite_list;
 
     // Framerate
-    init_t m_config = {0};
+    Init m_config = {0};
     bool m_vsync_enabled = true;
     Uint32 m_fps_cap = 0;
     double m_ms_per_frame = 0;
