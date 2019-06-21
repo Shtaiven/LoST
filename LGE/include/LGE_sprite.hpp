@@ -12,7 +12,7 @@
 
 namespace LGE {
 
-typedef void (* SpriteEventHandler)(const SDL_Event&);
+typedef void (*SpriteEventHandler)(const SDL_Event&);
 typedef void (*SpriteStateHandler)(Uint32 ms);
 
 // Sprite class manages sprites (character, enemies, etc)
