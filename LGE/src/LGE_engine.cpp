@@ -64,7 +64,7 @@ void LGE::Engine::close() {
     SDL_Quit();
 }
 
-int LGE::Engine::init(Init config) {
+int LGE::Engine::init(InitType config) {
     m_config = config;
 
     m_window = SDL_CreateWindow(m_title.c_str(),
