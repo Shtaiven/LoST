@@ -43,8 +43,11 @@ LoST is loosely based on a fictional video game described in the short story *Na
 
     where `<platform>` is one of the Visual Studio versions listed when typing `cmake --help`
 
-    e.g.
-
+    e.g. for Visual Studio 2019 64-bit:
+    ```PowerShell
+    cmake -G "Visual Studio 16 2019" -A "x64" ..
+    ```
+    or for Visual Studio 2017 64-bit:
     ```PowerShell
     cmake -G "Visual Studio 15 2017 Win64" ..
     ```
